@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create and View Polls</title>
+    <link rel="stylesheet" href="poll.css">
+    <link rel="stylesheet" href="../nav.css">
+   <script src="../nav.js" defer></script>
+</head>
+<body>
+    <!-- <header class="navbar">
+        <div class="logo">
+            <h1>Pollify</h1>
+        </div>
+    </header> -->
+
+    <header class="navbar">
+        <div class="hamburger-container" onclick="toggleSidebar()">
+            <div class="hamburger-menu">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        <div class="logo" onclick="redirectToHome()">
+            <img src="logo.png" alt="Logo">
+        </div>
+    </header>
+    
+    <div class="sidebar">
+        <a href="../upload/upload.html">Upload</a>
+        <a href="tasks.html">Tasks</a>
+        <a href="../poll/poll.html">Poll</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </div>
+<br><br><br><br><br>
+    <main class="main-container">
+        <!-- Create Poll Section -->
+        <section class="create-poll">
+            <h2>Create a New Poll</h2>
+            <form id="poll-form">
+                <div class="form-group">
+                    <label for="poll-question">Poll Question:</label>
+                    <input type="text" id="poll-question" name="poll-question" placeholder="Enter your poll question" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="poll-option-1">Option 1:</label>
+                    <input type="text" id="poll-option-1" name="poll-option-1" placeholder="Enter option 1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="poll-option-2">Option 2:</label>
+                    <input type="text" id="poll-option-2" name="poll-option-2" placeholder="Enter option 2" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="poll-option-3">Option 3:</label>
+                    <input type="text" id="poll-option-3" name="poll-option-3" placeholder="Enter option 3">
+                </div>
+
+                <div class="form-group">
+                    <label for="poll-option-4">Option 4:</label>
+                    <input type="text" id="poll-option-4" name="poll-option-4" placeholder="Enter option 4">
+                </div>
+
+                <button type="submit">Post Poll</button>
+            </form>
+        </section>
+
+        <!-- View Polls Section -->
+        <section class="view-polls">
+            <h2>Available Polls</h2>
+            <div id="polls-container">
+                <p>No polls available. Create one above!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Pollify. All rights reserved.</p>
+    </footer>
+
+    <script src="poll.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Assignment</title>
+    <link rel="stylesheet" href="../nav.css">
+    <link rel="stylesheet" href="upload.css">
+    <script src="script.js" defer></script>
+    <script src="../nav.js" defer></script>
+    <style>
+        
+    </style>
+    <script type="text/javascript">
+        function toPay(event) {
+            if (event) {
+                event.preventDefault(); // Prevent form submission
+            }
+
+            var doc = document.getElementById("file-upload").files.length > 0; // Check if a file is selected
+            var date = document.getElementById("submission-date").value; // Get the selected date
+            let presentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+
+            if (doc && date > presentDate) {
+                window.location.href = 'Pay/payment.html';
+            } else if (!doc) {
+                alert("Please select a file.");
+            } else {
+                alert("Select a valid date.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="hamburger-container" onclick="toggleSidebar()">
+            <div class="hamburger-menu">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        
+        <div class="logo" onclick="redirectToHome()" style="background-color: rgb(117, 117, 113);">
+            <img src="../logo.png" alt="Logo">
+        </div>
+    </header>
+    
+    <div class="sidebar">
+        <a href="../upload/upload.html">Upload</a>
+        <a href="tasks.html">Tasks</a>
+        <a href="../poll/poll.html">Poll</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <main class="upload-section">
+        <br>
+        <h1>Upload Your Assignment</h1>
+        <br>
+        <form id="upload-form" novalidate>
+            <div class="input-group">
+                <label for="file-upload"></label>
+                <input type="file" id="file-upload" name="file-upload" accept=".pdf, .docx, .txt" required>
+            </div>
+
+            <div class="input-group">
+                <label for="submission-date">Enter Submission Date (MM/DD/YYYY):</label>
+                <input type="date" id="submission-date" name="submission-date" placeholder="MM/DD/YYYY" required>
+            </div>
+
+            <button type="button" id="proceed-payment" onclick="toPay(event)">Proceed to Payment</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Learning Platform. All rights reserved.</p>
+    </footer>
+</body>
+</html>

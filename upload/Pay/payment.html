@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .menu {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            background: none;
+            border: none;
+        }
+        .menu-container {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .menu-container a {
+            display: block;
+            padding: 5px;
+            text-decoration: none;
+            color: black;
+        }
+        .payment-container {
+            width: 350px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            margin: auto;
+            text-align: left;
+        }
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+        }
+        .payment-method {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .paypal { background-color: #0070BA; }
+        .pay-later { background-color: #ff9800; }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .submit-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button class="menu" onclick="toggleMenu()">&#9776;</button>
+    <div class="menu-container" id="menu">
+        <a href="#">Home</a>
+        <a href="#">Payment Options</a>
+        <a href="#">Contact Support</a>
+    </div>
+
+    <div class="payment-container">
+        <h2>Payment</h2>
+        <p><strong>Amount being paid now: $115.50</strong></p>
+        
+        <div class="payment-methods">
+            <button class="payment-method">Credit Card</button>
+            <button class="payment-method paypal">PayPal</button>
+            <button class="payment-method pay-later">Pay Later</button>
+        </div>
+        
+        <h3>Enter Card Details</h3>
+        <input type="text" placeholder="Cardholder's Name">
+        <input type="text" placeholder="Card Number">
+        <label>Expiration Date:</label>
+        <input type="date" placeholder="DD/MM/YYYY">
+        <input type="text" placeholder="CVV Code">
+        
+        <button class="submit-btn" onclick="pay()">Proceed to Pay</button>
+    </div>
+    
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menu");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+        function pay() {
+            alert('Processing Payment...');
+            window.close();
+        }
+    </script>
+</body>
+</html>

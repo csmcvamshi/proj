@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Details | Fiverr Style</title>
+    <link rel="stylesheet" href="fiverr.css">
+    <style>
+        .service-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            text-align: center;
+        }
+        
+        .service-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .service-img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .service-img:hover {
+            transform: scale(1.05);
+        }
+        
+        .service-meta {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            transition: color 0.3s ease-in-out;
+        }
+        
+        .service-meta:hover {
+            color: #007bff;
+        }
+        
+        .btn-primary {
+            display: inline-block;
+            padding: 14px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #007bff, #00d4ff);
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <h1>Service Details</h1>
+        </div>
+    </header>
+    <main class="container">
+        <div class="service-container">
+            <img src="service1.jpg" alt="Service Image" class="service-img">
+            <h2>Professional Web Design</h2>
+            <p>We create custom, modern, and user-friendly websites for businesses.</p>
+            <div class="service-meta">
+                <span class="price">Starting at $250</span>
+                <span class="rating">⭐⭐⭐⭐⭐ (120)</span>
+                <span class="delivery">Delivery: 5 Days</span>
+            </div>
+            <button class="btn-primary">Order Now</button>
+        </div>
+    </main>
+</body>
+</html>

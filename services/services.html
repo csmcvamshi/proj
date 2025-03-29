@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services Listing</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+            padding: 40px 20px;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(120px);
+            z-index: -1;
+        }
+
+        /* Hamburger Menu Styles */
+        .hamburger-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            cursor: pointer;
+            width: 30px;
+            height: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger-line {
+            width: 100%;
+            height: 3px;
+            background-color: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100vh;
+            background-color: rgba(30, 30, 30, 0.95);
+            transition: left 0.3s ease;
+            z-index: 999;
+            padding-top: 80px;
+        }
+
+        .side-menu.open {
+            left: 0;
+        }
+
+        .side-menu-item {
+            color: #e0e0e0;
+            text-decoration: none;
+            display: block;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            transition: background-color 0.3s ease;
+        }
+
+        .side-menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .services-container {
+            background-color: rgba(30, 30, 30, 0.85);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 1000px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateY(20px);
+            color: #e0e0e0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            opacity: 0;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #ffffff;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            opacity: 0;
+        }
+
+        .search-bar {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+        }
+
+        .search-bar input:focus {
+            border-color: #666;
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .filter-dropdown {
+            position: relative;
+        }
+
+        .filter-btn {
+            padding: 12px 20px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #2a2a2a;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            color: #e0e0e0;
+        }
+
+        .filter-btn:hover {
+            border-color: #666;
+        }
+
+        .services-list {
+            opacity: 0;
+        }
+
+        .service-item {
+            background-color: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            display: grid;
+            grid-template-columns: 0.7fr 1fr 1fr 1.3fr 1fr 0.8fr;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid #333;
+        }
+
+        .service-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            border-color: #666;
+        }
+
+        .order-id {
+            font-weight: 500;
+            color: #999;
+        }
+
+        .price {
+            font-weight: bold;
+            font-size: 18px;
+            color: #4db8ff;
+        }
+
+        .subject {
+            font-weight: 500;
+            color: #e0e0e0;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            color: #e0e0e0;
+        }
+
+        .tag:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .order-by {
+            color: #999;
+        }
+
+        .take-order-btn {
+            background-color: #4db8ff;
+            color: #1a1a1a;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .take-order-btn:hover {
+            background-color: #66c2ff;
+            transform: translateY(-2px);
+        }
+
+        .take-order-btn.taken {
+            background-color: #2b733a;
+            cursor: default;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 10px;
+            opacity: 0;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #2a2a2a;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #e0e0e0;
+        }
+
+        .page-btn:hover, .page-btn.active {
+            border-color: #4db8ff;
+            background-color: #4db8ff;
+            color: #1a1a1a;
+        }
+
+        .create-service-btn {
+            background-color: #4db8ff;
+            color: #1a1a1a;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .create-service-btn:hover {
+            background-color: #66c2ff;
+            transform: translateY(-3px);
+        }
+
+        .service-header {
+            display: grid;
+            grid-template-columns: 0.7fr 1fr 1fr 1.3fr 1fr 0.8fr;
+            padding: 0 20px 15px 20px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
+            font-weight: 500;
+            color: #999;
+        }
+
+        .tooltip {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 900px) {
+            .services-container {
+                padding: 30px 20px;
+            }
+            
+            .service-item, .service-header {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .service-header {
+                display: none;
+            }
+            
+            .service-item {
+                position: relative;
+                padding-top: 40px;
+                padding-bottom: 70px;
+            }
+            
+            .order-id {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                font-size: 12px;
+            }
+            
+            .service-item > div:not(.take-order-wrapper) {
+                position: relative;
+                padding-left: 100px;
+                min-height: 30px;
+                display: flex;
+                align-items: center;
+            }
+            
+            .service-item > div:not(.take-order-wrapper)::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 90px;
+                font-weight: 500;
+                color: #777;
+            }
+            
+            .take-order-wrapper {
+                position: absolute;
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+    </div>
+
+    <!-- Side Menu -->
+    <div class="side-menu">
+        <a href="../home/home.html" class="side-menu-item">Upload</a>
+        <a href="services.html" class="side-menu-item">Tasks</a>
+        <a href="../poll/poll.html" class="side-menu-item">Poll</a>
+        <a href="../About/aboutus" class="side-menu-item">About</a>
+        <a href="../Contact/contactus" class="side-menu-item">Contact</a>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+    <div class="services-container">
+        <div class="header">
+            <h1>Services List</h1>
+            <button class="create-service-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                New Service
+            </button>
+        </div>
+        
+        <div class="search-filter">
+            <div class="search-bar">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" placeholder="Search services...">
+            </div>
+            
+            <div class="filter-dropdown">
+                <button class="filter-btn">
+                    <svg class="filter-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    Filter
+                </button>
+            </div>
+        </div>
+        
+        <div class="services-list">
+            <div class="service-header">
+                <div>Order ID</div>
+                <div>Price</div>
+                <div>Subject</div>
+                <div>Tags</div>
+                <div>Order By</div>
+                <div>Action</div>
+            </div>
+            
+            <!-- Service items will be dynamically added here -->
+        </div>
+        
+        <div class="pagination">
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Hamburger Menu Toggle Function
+        function toggleMenu() {
+            const sideMenu = document.querySelector('.side-menu');
+            const hamburgerLines = document.querySelectorAll('.hamburger-line');
+            
+            sideMenu.classList.toggle('open');
+            
+            // Optional: Add animation to hamburger lines
+            hamburgerLines[0].style.transform = sideMenu.classList.contains('open') 
+                ? 'rotate(45deg) translate(5px, 5px)' 
+                : 'rotate(0) translate(0)';
+            
+            hamburgerLines[1].style.opacity = sideMenu.classList.contains('open') 
+                ? '0' 
+                : '1';
+            
+            hamburgerLines[2].style.transform = sideMenu.classList.contains('open') 
+                ? 'rotate(-45deg) translate(5px, -5px)' 
+                : 'rotate(0) translate(0)';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample data (same as previous script)
+            const servicesData = [
+                { 
+                    orderId: "ORD-2023-001", 
+                    price: "₹1,499", 
+                    subject: "Web Development", 
+                    tags: ["WordPress", "E-commerce", "Responsive"], 
+                    orderBy: "John Doe",
+                    status: "available"
+                },
+                { 
+                    orderId: "ORD-2023-002", 
+                    price: "₹2,999", 
+                    subject: "Logo Design", 
+                    tags: ["Branding", "Vector", "Creative"], 
+                    orderBy: "Jane Smith",
+                    status: "available" 
+                },
+                { 
+                    orderId: "ORD-2023-003", 
+                    price: "₹899", 
+                    subject: "Content Writing", 
+                    tags: ["SEO", "Blog", "Marketing"], 
+                    orderBy: "Alex Johnson",
+                    status: "taken" 
+                },
+                { 
+                    orderId: "ORD-2023-004", 
+                    price: "₹4,999", 
+                    subject: "Mobile App Development", 
+                    tags: ["Android", "iOS", "Flutter"], 
+                    orderBy: "Michael Brown",
+                    status: "available" 
+                },
+                { 
+                    orderId: "ORD-2023-005", 
+                    price: "₹1,299", 
+                    subject: "Digital Marketing", 
+                    tags: ["Social Media", "Google Ads", "Analytics"], 
+                    orderBy: "Emily Davis",
+                    status: "available" 
+                }
+            ];
+            
+            // Animation on page load
+            gsap.to('.services-container', {
+                opacity: 1, 
+                y: 0, 
+                duration: 0.8, 
+                ease: 'power2.out'
+            });
+            
+            gsap.to('.header', {
+                opacity: 1,
+                duration: 0.5,
+                delay: 0.3
+            });
+            
+            gsap.to('.search-filter', {
+                opacity: 1,
+                duration: 0.5,
+                delay: 0.4
+            });
+            
+            gsap.to('.services-list', {
+                opacity: 1,
+                duration: 0.5,
+                delay: 0.5
+            });
+            
+            gsap.to('.pagination', {
+                opacity: 1,
+                duration: 0.5,
+                delay: 0.6
+            });
+            
+            // Generate service items
+            const servicesList = document.querySelector('.services-list');
+            
+            servicesData.forEach((service, index) => {
+                const serviceItem = document.createElement('div');
+                serviceItem.className = 'service-item';
+                
+                const takeButtonHTML = service.status === 'available' 
+                    ? `<button class="take-order-btn" data-order-id="${service.orderId}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                        Take Order
+                      </button>`
+                    : `<button class="take-order-btn taken" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                            <path d="m9 12 2 2 4-4"></path>
+                        </svg>
+                        Taken
+                      </button>`;
+                
+                serviceItem.innerHTML = `
+                    <div class="order-id" data-label="Order ID:">${service.orderId}</div>
+                    <div class="price" data-label="Price:">${service.price}</div>
+                    <div class="subject" data-label="Subject:">${service.subject}</div>
+                    <div class="tags" data-label="Tags:">
+                        ${service.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="order-by" data-label="Order By:">${service.orderBy}</div>
+                    <div class="take-order-wrapper" data-label="Action:">
+                        ${takeButtonHTML}
+                    </div>
+                `;
+                
+                servicesList.appendChild(serviceItem);
+                
+                // Animate each service item
+                gsap.to(serviceItem, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    delay: 0.6 + (index * 0.1)
+                });
+            });
+            
+            // Take order button functionality
+            const takeOrderButtons = document.querySelectorAll('.take-order-btn:not(.taken)');
+            
+            takeOrderButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const orderId = this.getAttribute('data-order-id');
+                    
+                    // Button click animation
+                    gsap.to(this, {
+                        scale: 0.9,
+                        duration: 0.1,
+                        onComplete: () => {
+                            gsap.to(this, {
+                                scale: 1,
+                                duration: 0.1
+                            });
+                            
+                            // Change button to "Taken" state
+                            this.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                Taken
+                            `;
+                            this.classList.add('taken');
+                            this.disabled = true;
+                            
+                            // Show confirmation tooltip
+                            const tooltip = document.getElementById('tooltip');
+                            tooltip.textContent = `You have taken order ${orderId}`;
+                            tooltip.style.opacity = '1';
+                            tooltip.style.top = (this.getBoundingClientRect().top - 40) + 'px';
+                            tooltip.style.left = (this.getBoundingClientRect().left + (this.offsetWidth / 2) - (tooltip.offsetWidth / 2)) + 'px';
+                            
+                            // Hide tooltip after 3 seconds
+                            setTimeout(() => {
+                                gsap.to(tooltip, {
+                                    opacity: 0,
+                                    duration: 0.3
+                                });
+                            }, 3000);
+                        }
+                    });
+                    
+                    // In a real application, you would send an API request here to update the order status
+                    console.log(`Order ${orderId} has been taken`);
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('.search-bar input');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const serviceItems = document.querySelectorAll('.service-item');
+                
+                serviceItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        gsap.to(item, {
+                            opacity: 1,
+                            height: 'auto',
+                            duration: 0.3,
+                            display: 'grid'
+                        });
+                    } else {
+                        gsap.to(item, {
+                            opacity: 0,
+                            height: 0,
+                            duration: 0.3,
+                            onComplete: () => {
+                                item.style.display = 'none';
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Pagination functionality
+            const pageButtons = document.querySelectorAll('.page-btn');
+            
+            pageButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    pageButtons.forEach(b => b.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Animate page change
+                    const serviceItems = document.querySelectorAll('.service-item');
+                    
+                    gsap.to(serviceItems, {
+                        opacity: 0,
+                        y: 10,
+                        duration: 0.3,
+                        stagger: 0.05,
+                        onComplete: () => {
+                            gsap.to(serviceItems, {
+                                opacity: 1,
+                                y: 0,
+                                duration: 0.3,
+                                stagger: 0.05
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

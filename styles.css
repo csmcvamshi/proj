@@ -1,0 +1,285 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden;
+}
+
+
+/* Smoke Effect in Corners */
+.smoke-corner {
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 10%, transparent 70%);
+    z-index: -1;
+    animation: float 6s infinite ease-in-out;
+    filter: blur(20px);
+}
+/* Typewriter Effect */
+.typewriter {
+    border-right: 2px solid #00ffcc;
+    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+    overflow: hidden;
+    white-space: nowrap;
+}
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: #00ffcc }
+}
+
+
+.top-left {
+    top: -150px;
+    left: -150px;
+}
+
+.top-right {
+    top: -150px;
+    right: -150px;
+}
+
+.bottom-left {
+    bottom: -150px;
+    left: -150px;
+}
+
+.bottom-right {
+    bottom: -150px;
+    right: -150px;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* Moving Smoke Elements */
+.smoke {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 10%, transparent 70%);
+    filter: blur(30px);
+    animation: moveSmoke 10s infinite linear;
+}
+
+.smoke-1 {
+    top: 10%;
+    left: -200px;
+    animation-delay: 0s;
+}
+
+.smoke-2 {
+    top: 30%;
+    left: -200px;
+    animation-delay: 2s;
+}
+
+.smoke-3 {
+    top: 50%;
+    left: -200px;
+    animation-delay: 4s;
+}
+
+.smoke-4 {
+    top: 70%;
+    left: -200px;
+    animation-delay: 6s;
+}
+
+@keyframes moveSmoke {
+    0% {
+        transform: translateX(-200px);
+    }
+    100% {
+        transform: translateX(calc(100vw + 200px));
+    }
+}
+
+/* Header with Hamburger Menu and Profile Button */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 20px;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hamburger-menu {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    width: 30px;
+    gap: 5px;
+}
+/* Particles Effect */
+.particles {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    z-index: -1;
+}
+
+.bar {
+    width: 100%;
+    height: 3px;
+    background-color: #fff;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-menu:hover .bar {
+    background-color: #00ffcc;
+}
+
+.nav-menu {
+    position: absolute;
+    top: 50px;
+    left: -100%;
+    width: 200px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    padding: 10px;
+    transition: left 0.3s ease;
+}
+
+.hamburger-menu:hover + .nav-menu, .nav-menu:hover {
+    left: 0;
+}
+
+.nav-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-menu ul li {
+    margin: 15px 0;
+}
+
+.nav-menu ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.nav-menu ul li a:hover {
+    color: #00ffcc;
+}
+
+.profile-button {
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.profile-button img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-button:hover {
+    transform: scale(1.1);
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.hero p {
+    font-size: 24px;
+    margin-bottom: 30px;
+    animation: fadeIn 3s ease-in-out;
+}
+
+.cta-button {
+    padding: 15px 30px;
+    background-color: #00ffcc;
+    color: #000;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 18px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #00ccaa;
+    transform: scale(1.1);
+}
+
+/* Cool Floating Circles */
+.floating-circle {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 10%, transparent 70%);
+    border-radius: 50%;
+    animation: float 5s infinite ease-in-out;
+    filter: blur(10px);
+}
+
+.circle-1 {
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.circle-2 {
+    top: 60%;
+    left: 70%;
+    animation-delay: 2s;
+}
+
+.circle-3 {
+    top: 30%;
+    left: 50%;
+    animation-delay: 4s;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

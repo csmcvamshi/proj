@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feynman Dashboard</title>
+    <style>
+        :root {
+            --primary-bg: #202123;
+            --secondary-bg: #2D2D30;
+            --text-color: #d8d4d4;
+            --accent-color: #d765cc;
+            --hover-color: #007bff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            line-height: 1.4;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: var(--secondary-bg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent-color);
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(215, 101, 204, 0.1), rgba(0, 123, 255, 0.1));
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-details h2 {
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .user-details p {
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background-color: rgba(45, 45, 48, 0.5);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        /* Order Tracking Styles */
+        .order-tracking-section {
+            background-color: var(--secondary-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .tracking-card {
+            background-color: rgba(45, 45, 48, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .tracking-card input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            background-color: rgba(32, 33, 35, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .tracking-card button {
+            width: 100%;
+            padding: 8px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.3s ease;
+        }
+
+        .tracking-card button:hover {
+            background-color: #b64bad;
+        }
+
+        .result-card {
+            background-color: rgba(45, 45, 48, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .result-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .order-details {
+            background-color: rgba(32, 33, 35, 0.5);
+            border-radius: 8px;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-item p:first-child {
+            color: #aaa;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .amazon-tracker {
+            background-color: rgba(32, 33, 35, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .progress-track {
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--accent-color);
+            border-radius: 5px;
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
+        .tracker-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tracker-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tracker-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-color);
+        }
+
+        .tracker-step.completed .tracker-icon {
+            background-color: var(--accent-color);
+        }
+
+        .tracker-step.active .tracker-icon {
+            border: 2px solid var(--accent-color);
+        }
+
+        .steps-list {
+            margin-top: 15px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            opacity: 0;
+        }
+
+        .step-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .step-item.completed .step-indicator {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .step-item.current .step-indicator .pulse {
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.7; }
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-content h3 {
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .step-content p {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid white;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--secondary-bg);
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--hover-color);
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .profile-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-info {
+                flex-direction: column;
+            }
+
+            .profile-stats {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .order-details {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background-color: var(--secondary-bg);
+                padding: 15px;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header container">
+        <div class="logo">
+            <img src="../logo.png" alt="Feynman Logo">
+        </div>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <nav>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="../home/home.html">Home</a></li>
+                <li><a href="../upload/upload.html">Upload</a></li>
+                <li><a href="../poll/poll.html">Community</a></li>
+                <li><a href="../services/services.html">services</a></li>
+               
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="profile-section">
+            <div class="profile-info">
+                <img src="../sharma.png" alt="Profile Picture" class="profile-pic">
+                <div class="user-details">
+                    <h2>sharma-ji-ka-beta</h2>
+                    <p>Project himself</p>
+                </div>
+            </div>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <h3>Followers</h3>
+                    <p>Only others follow him</p>
+                </div>
+                <div class="stat-item">
+                    <h3>Rating</h3>
+                    <p>Only he rates others</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="order-tracking-section">
+            <h2>Track Your Order</h2>
+            <div id="tracking-form" class="tracking-card">
+                <form id="order-form">
+                    <input 
+                        type="text" 
+                        id="order-number" 
+                        placeholder="Enter your order number (e.g., ORD-12345)" 
+                        required
+                    >
+                    <button type="submit" id="track-btn">
+                        Track Order
+                    </button>
+                </form>
+            </div>
+
+            <div id="result-view" class="result-card hidden">
+                <div class="result-header">
+                    <div class="result-header-content">
+                        <div>
+                            <h2 id="result-order-number">Order #ORD-12345</h2>
+                            <p id="result-customer-name">John Smith</p>
+                        </div>
+                        <button id="back-btn" class="back-btn">← Back</button>
+                    </div>
+                </div>
+                
+                <div class="result-body">
+                    <div class="order-details">
+                        <div class="detail-item">
+                            <p>Status</p>
+                            <p id="order-status">In Progress</p>
+                        </div>
+                        <div class="detail-item">
+                            <p>Order Date</p>
+                            <p id="order-date">2025-03-15</p>
+                        </div>
+                        <div class="detail-item">
+                            <p>Est. Completion</p>
+                            <p id="est-completion">2025-03-28</p>
+                        </div>
+                    </div>
+                    
+                    <div class="amazon-tracker">
+                        <div class="tracker-main">
+                            <div class="progress-track">
+                                <div class="progress-fill" id="amazon-progress"></div>
+                            </div>
+                            
+                            <div class="tracker-step" id="step-ordered">
+                                <div class="tracker-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                    </svg>
+                                </div>
+                                <div class="tracker-info">
+                                    <div class="tracker-title">Ordered</div>
+                                    <div class="tracker-date" id="ordered-date">Mar 15</div>
+                                </div>
+                            </div>
+                            
+                            <div class="tracker-step" id="step-processing">
+                                <div class="tracker-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                                    </svg>
+                                </div>
+                                <div class="tracker-info">
+                                    <div class="tracker-title">Processing</div>
+                                    <div class="tracker-date" id="processing-date">Mar 17</div>
+                                </div>
+                            </div>
+                            
+                            <div class="tracker-step" id="step-completed">
+                                <div class="tracker-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <div class="tracker-info">
+                                    <div class="tracker-title">Completed</div>
+                                    <div class="tracker-date" id="completed-date">Est. Mar 28</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-points" id="progress-points">
+                            <!-- Progress points will be added dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div class="steps-list" id="steps-list">
+                        <!-- Steps will be added dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>We've just launched Feynman</p>
+        <div>
+            <a href="#">Learn More on our Blog ↗</a>
+            <a href="#">View our Introduction Video on YouTube ↗</a>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const navMenu = document.getElementById('nav-menu');
+            navMenu.classList.toggle('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderForm = document.getElementById('order-form');
+            const trackingForm = document.getElementById('tracking-form');
+            const resultView = document.getElementById('result-view');
+            const backBtn = document.getElementById('back-btn');
+            const trackBtn = document.getElementById('track-btn');
+            const orderNumberInput = document.getElementById('order-number');
+            
+            // Result elements
+            const resultOrderNumber = document.getElementById('result-order-number');
+            const resultCustomerName = document.getElementById('result-customer-name');
+            const orderStatus = document.getElementById('order-status');
+            const orderDate = document.getElementById('order-date');
+            const estCompletion = document.getElementById('est-completion');
+            const progressFill = document.getElementById('progress-fill');
+            const progressPoints = document.getElementById('progress-points');
+            const stepsList = document.getElementById('steps-list');
+            
+            // Amazon tracker elements
+            const amazonProgress = document.getElementById('amazon-progress');
+            const stepOrdered = document.getElementById('step-ordered');
+            const stepProcessing = document.getElementById('step-processing');
+            const stepCompleted = document.getElementById('step-completed');
+            const orderedDate = document.getElementById('ordered-date');
+            const processingDate = document.getElementById('processing-date');
+            const completedDate = document.getElementById('completed-date');
+            
+            // Sample order data (in a real app, this would come from your API)
+            const mockOrderData = {
+                orderNumber: 'FY-2024-001',
+                customerName: 'sharma-ji-ka-beta',
+                status: 'In Progress',
+                created: '2025-03-15',
+                estimated: '2025-03-28',
+                currentStep: 2, // 0-based index of the current step (0=ordered, 1=processing, 2=completed)
+                steps: [
+                    { id: 1, title: 'Order Received', completed: true, date: '2025-03-15' },
+                    { id: 2, title: 'Processing', completed: true, date: '2025-03-17' },
+                    { id: 3, title: 'In Progress', completed: false, date: 'Est. 2025-03-22' },
+                    { id: 4, title: 'Quality Check', completed: false, date: 'Est. 2025-03-25' },
+                    { id: 5, title: 'Completed', completed: false, date: 'Est. 2025-03-28' }
+                ]
+            };
+            
+            // Event listeners
+            orderForm.addEventListener('submit', trackOrder);
+            backBtn.addEventListener('click', resetTracking);
+            
+            function trackOrder(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const originalBtnText = trackBtn.innerHTML;
+                trackBtn.disabled = true;
+                trackBtn.innerHTML = '<span class="spinner"></span>Tracking...';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    displayOrderData(mockOrderData);
+                    trackingForm.classList.add('hidden');
+                    resultView.classList.remove('hidden');
+                    
+                    // Reset button state
+                    trackBtn.disabled = false;
+                    trackBtn.innerHTML = originalBtnText;
+                }, 1500);
+            }
+            
+            function resetTracking() {
+                trackingForm.classList.remove('hidden');
+                resultView.classList.add('hidden');
+                orderNumberInput.value = '';
+            }
+            
+            function displayOrderData(data) {
+                // Set basic info
+                resultOrderNumber.textContent = `Order #${data.orderNumber}`;
+                resultCustomerName.textContent = data.customerName;
+                orderStatus.textContent = data.status;
+                orderDate.textContent = data.created;
+                estCompletion.textContent = data.estimated;
+                
+                // Calculate progress
+                const completedSteps = data.steps.filter(step => step.completed).length;
+                const progressPercentage = (completedSteps / data.steps.length) * 100;
+                
+                // Format dates for Amazon tracker
+                const createdDate = new Date(data.created);
+                const estimatedDate = new Date(data.estimated);
+                orderedDate.textContent = createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
+                // Get the processing start date from steps
+                const processingStep = data.steps.find(step => step.title.includes('Processing'));
+                if (processingStep) {
+                    const processingStartDate = new Date(processingStep.date);
+                    processingDate.textContent = processingStartDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                }
+                
+                completedDate.textContent = `Est. ${estimatedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+                
+                // Update Amazon tracker states based on current step
+                updateAmazonTracker(data);
+                
+                // Update progress bar (with animation)
+                setTimeout(() => {
+                    progressFill.style.width = `${progressPercentage}%`;
+                }, 100);
+                
+                // Create progress points
+                progressPoints.innerHTML = '';
+                data.steps.forEach(step => {
+                    const point = document.createElement('div');
+                    point.className = `progress-point ${step.completed ? 'active' : ''}`;
+                    progressPoints.appendChild(point);
+                });
+                
+                // Create steps list
+                stepsList.innerHTML = '';
+                data.steps.forEach((step, index) => {
+                    const stepEl = document.createElement('div');
+                    
+                    if (step.completed) {
+                        stepEl.className = 'step-item completed';
+                    } else if (index === data.steps.findIndex(s => !s.completed)) {
+                        stepEl.className = 'step-item current';
+                    } else {
+                        stepEl.className = 'step-item';
+                    }
+                    
+                    // Add animation delay
+                    stepEl.style.animationDelay = `${0.6 + index * 0.1}s`;
+                    
+                    // Create step content
+                    stepEl.innerHTML = `
+                        <div class="step-indicator">
+                            ${step.completed 
+                                ? '<svg class="checkmark" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>'
+                                : index === data.steps.findIndex(s => !s.completed)
+                                    ? '<div class="pulse"></div>'
+                                    : step.id
+                            }
+                        </div>
+                        <div class="step-content">
+                            <h3>${step.title}</h3>
+                            <p>${step.date}</p>
+                        </div>
+                    `;
+                    
+                    stepsList.appendChild(stepEl);
+                    
+                    // Trigger animation
+                    setTimeout(() => {
+                        stepEl.style.animation = 'fadeInDown 0.5s ease-out forwards';
+                    }, 10);
+                });
+            }
+            
+            function updateAmazonTracker(data) {
+                // Reset all steps
+                stepOrdered.className = 'tracker-step';
+                stepProcessing.className = 'tracker-step';
+                stepCompleted.className = 'tracker-step';
+                
+                // Determine progress percentage for the Amazon tracker
+                let progressWidth = 0;
+                
+                // Update tracker based on the currentStep
+                if (data.currentStep >= 0) {
+                    // Ordered step is completed
+                    stepOrdered.className = 'tracker-step completed active';
+                    progressWidth = 0;
+                }
+                
+                if (data.currentStep >= 1) {
+                    // Processing step is active or completed
+                    stepProcessing.className = 'tracker-step completed active';
+                    progressWidth = 50;
+                }
+                
+                if (data.currentStep === 1) {
+                    // If we're at processing, make it the in-progress step
+                    stepProcessing.className = 'tracker-step active in-progress';
+                }
+                
+                if (data.currentStep >= 2) {
+                    // Completed step is active
+                    stepCompleted.className = 'tracker-step completed active';
+                    progressWidth = 100;
+                }
+                
+                if (data.currentStep === 2) {
+                    // If we're at the final step but not yet completed
+                    stepCompleted.className = 'tracker-step active in-progress';
+                }
+                
+                // Update the progress bar with animation
+                setTimeout(() => {
+                    amazonProgress.style.width = `${progressWidth}%`;
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

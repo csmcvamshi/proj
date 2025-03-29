@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #f5f5f5;
+            padding: 1rem;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-links a, .nav-links button {
+            margin-left: 1rem;
+            text-decoration: none;
+            color: #333;
+        }
+        .nav-links button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .main-content {
+            padding: 2rem;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Your App</div>
+            <div class="nav-links" id="navLinks">
+                <!-- Navigation links will be inserted here by JavaScript -->
+            </div>
+        </nav>
+    </header>
+    
+    <div class="main-content" id="mainContent">
+        <!-- Main content will be inserted here by JavaScript -->
+    </div>
+
+    <script>
+        // Function to check if user is logged in
+        function isUserLoggedIn() {
+            return localStorage.getItem('authToken') !== null;
+        }
+
+        // Function to update the UI based on login status
+        function updateUI() {
+            const navLinksElement = document.getElementById('navLinks');
+            const mainContentElement = document.getElementById('mainContent');
+            
+            // Clear existing content
+            navLinksElement.innerHTML = '';
+            mainContentElement.innerHTML = '';
+            
+            if (isUserLoggedIn()) {
+                // User is logged in - show profile and logout links
+                navLinksElement.innerHTML = `
+                    <a href="profile.html">Profile</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <button id="logoutButton">Logout</button>
+                `;
+                
+                // Add logged in content
+                mainContentElement.innerHTML = `
+                    <h1>Welcome back!</h1>
+                    <p>Here's your personalized content...</p>
+                `;
+                
+                // Add logout functionality
+                document.getElementById('logoutButton').addEventListener('click', function() {
+                    localStorage.removeItem('authToken');
+                    updateUI();
+                });
+            } else {
+                // User is not logged in - show login and signup links
+                navLinksElement.innerHTML = `
+                    <a href="login.html">Login</a>
+                    <a href="signup.html">Sign Up</a>
+                `;
+                
+                // Add guest content
+                mainContentElement.innerHTML = `
+                    <h1>Welcome to Our Platform</h1>
+                    <p>Sign up to access all features</p>
+                    <div class="cta-buttons">
+                        <a href="signup.html" class="btn btn-primary">Get Started</a>
+                        <a href="login.html" class="btn btn-secondary">Login</a>
+                    </div>
+                `;
+            }
+        }
+        
+        // Call updateUI when the page loads
+        document.addEventListener('DOMContentLoaded', updateUI);
+        
+        // For demonstration purposes, you would set this token when the user logs in
+        // This code would be in your login page
+        /*
+        function handleLogin(username, password) {
+            // Call your authentication API here
+            // If successful:
+            localStorage.setItem('authToken', 'your-auth-token');
+            window.location.href = 'index.html'; // Redirect to homepage
+        }
+        */
+    </script>
+</body>
+</html>
