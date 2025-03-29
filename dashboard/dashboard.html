@@ -40,11 +40,16 @@
         /* Header Styles */
         .header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 10px 15px;
             background-color: var(--secondary-bg);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+            font-size: 20px;
+            margin-right: 15px; /* Space between hamburger and logo */
         }
 
         .logo img {
@@ -54,26 +59,30 @@
         }
 
         .nav-menu {
-            display: flex;
+            display: none; /* Hide by default */
             list-style: none;
-            gap: 15px;
-            font-size: 13px;
+            flex-direction: column; /* Vertical layout */
+            position: absolute;
+            top: 60px; /* Position below the header */
+            left: 0;
+            background-color: var(--secondary-bg);
+            width: 30%;
+            padding: 15px;
+        }
+
+        .nav-menu.active {
+            display: flex; /* Show when active */
         }
 
         .nav-menu a {
             text-decoration: none;
             color: var(--text-color);
             transition: color 0.3s ease;
+            margin: 5px 0; /* Add some margin for spacing */
         }
 
         .nav-menu a:hover {
             color: var(--accent-color);
-        }
-
-        .menu-toggle {
-            display: none;
-            cursor: pointer;
-            font-size: 20px;
         }
 
         /* Profile Section */
@@ -371,25 +380,6 @@
             .order-details {
                 grid-template-columns: 1fr;
             }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .nav-menu {
-                display: none;
-                flex-direction: column;
-                width: 100%;
-                position: absolute;
-                top: 60px;
-                left: 0;
-                background-color: var(--secondary-bg);
-                padding: 15px;
-            }
-
-            .nav-menu.active {
-                display: flex;
-            }
         }
 
         /* Animations */
@@ -401,17 +391,16 @@
 </head>
 <body>
     <header class="header container">
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
         <div class="logo">
             <img src="../logo.png" alt="Feynman Logo">
         </div>
-        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
         <nav>
             <ul class="nav-menu" id="nav-menu">
                 <li><a href="../home/home.html">Home</a></li>
                 <li><a href="../upload/upload.html">Upload</a></li>
+                <li><a href="../services/services.html">Services</a></li>
                 <li><a href="../poll/poll.html">Community</a></li>
-                <li><a href="../services/services.html">services</a></li>
-               
             </ul>
         </nav>
     </header>
