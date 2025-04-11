@@ -60,7 +60,7 @@
         .side-menu {
             position: fixed;
             top: 0;
-            left: -250px;
+            left: -250px; /* Hidden by default */
             width: 250px;
             height: 100vh;
             background-color: rgba(30, 30, 30, 0.95);
@@ -70,7 +70,7 @@
         }
 
         .side-menu.open {
-            left: 0;
+            left: 0; /* Show when open */
         }
 
         .side-menu-item {
@@ -172,6 +172,16 @@
             opacity: 0;
         }
 
+        .service-header {
+            display: grid;
+            grid-template-columns: 0.7fr 1fr 1fr 0.8fr 1fr 0.8fr;
+            padding: 0 20px 15px 20px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
+            font-weight: 500;
+            color: #999;
+        }
+
         .service-item {
             background-color: #2a2a2a;
             border-radius: 12px;
@@ -182,10 +192,13 @@
             opacity: 0;
             transform: translateY(10px);
             display: grid;
-            grid-template-columns: 0.7fr 1fr 1fr 1.3fr 1fr 0.8fr;
+            grid-template-columns: 0.7fr 1fr 1fr 0.8fr 1fr 0.8fr;
             align-items: center;
             gap: 15px;
             border: 1px solid #333;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
         }
 
         .service-item:hover {
@@ -210,27 +223,27 @@
             color: #e0e0e0;
         }
 
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .tag {
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 5px 10px;
-            border-radius: 50px;
-            font-size: 12px;
-            transition: all 0.3s ease;
-            color: #e0e0e0;
-        }
-
-        .tag:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
         .order-by {
             color: #999;
+        }
+
+        .countdown {
+            color: #ff9f4d;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .countdown.urgent {
+            color: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
         }
 
         .take-order-btn {
@@ -305,16 +318,6 @@
             transform: translateY(-3px);
         }
 
-        .service-header {
-            display: grid;
-            grid-template-columns: 0.7fr 1fr 1fr 1.3fr 1fr 0.8fr;
-            padding: 0 20px 15px 20px;
-            border-bottom: 1px solid #333;
-            margin-bottom: 15px;
-            font-weight: 500;
-            color: #999;
-        }
-
         .tooltip {
             position: fixed;
             background: rgba(255, 255, 255, 0.2);
@@ -327,6 +330,36 @@
             opacity: 0;
             transition: opacity 0.3s ease;
             backdrop-filter: blur(10px);
+        }
+
+        /* Enhanced Description Styling */
+        .service-description-container {
+            grid-column: 1 / -1;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            margin-top: 0;
+            border-top: 0px solid transparent;
+            padding: 0 15px;
+        }
+
+        .service-item.expanded .service-description-container {
+            max-height: 300px;
+            opacity: 1;
+            margin-top: 15px;
+            border-top: 1px solid #444;
+            padding: 15px;
+        }
+
+        .description-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #4db8ff;
+        }
+
+        .clock-icon {
+            color: #ff9f4d;
         }
 
         @media (max-width: 900px) {
@@ -346,7 +379,7 @@
             .service-item {
                 position: relative;
                 padding-top: 40px;
-                padding-bottom: 70px;
+                padding-bottom: 30px;
             }
             
             .order-id {
@@ -356,7 +389,7 @@
                 font-size: 12px;
             }
             
-            .service-item > div:not(.take-order-wrapper) {
+            .service-item > div:not(.take-order-wrapper):not(.service-description-container) {
                 position: relative;
                 padding-left: 100px;
                 min-height: 30px;
@@ -364,7 +397,7 @@
                 align-items: center;
             }
             
-            .service-item > div:not(.take-order-wrapper)::before {
+            .service-item > div:not(.take-order-wrapper):not(.service-description-container)::before {
                 content: attr(data-label);
                 position: absolute;
                 left: 0;
@@ -395,24 +428,25 @@
 
     <!-- Side Menu -->
     <div class="side-menu">
-        <a href="../home/home.html" class="side-menu-item">Upload</a>
-        <a href="services.html" class="side-menu-item">Tasks</a>
+        <a href="../home/home.html" class="side-menu-item">Home</a>
+        <a href="../upload/upload.html" class="side-menu-item">Upload</a>
+        <a href="services.html" class="side-menu-item">Services</a>
         <a href="../poll/poll.html" class="side-menu-item">Poll</a>
-        <a href="../About/aboutus" class="side-menu-item">About</a>
-        <a href="../Contact/contactus" class="side-menu-item">Contact</a>
+        <a href="../aboutus" class="side-menu-item">About us</a>
+        <a href="../contactus" class="side-menu-item">Support</a>
     </div>
 
     <div class="tooltip" id="tooltip"></div>
     <div class="services-container">
         <div class="header">
             <h1>Services List</h1>
-            <button class="create-service-btn">
+            <a href="../upload/upload.html" class="create-service-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
                 New Service
-            </button>
+            </a>
         </div>
         
         <div class="search-filter">
@@ -439,8 +473,8 @@
                 <div>Order ID</div>
                 <div>Price</div>
                 <div>Subject</div>
-                <div>Tags</div>
                 <div>Order By</div>
+                <div>Time Left</div>
                 <div>Action</div>
             </div>
             
@@ -461,68 +495,220 @@
 
     <script>
         // Hamburger Menu Toggle Function
-        function toggleMenu() {
-            const sideMenu = document.querySelector('.side-menu');
-            const hamburgerLines = document.querySelectorAll('.hamburger-line');
-            
-            sideMenu.classList.toggle('open');
-            
-            // Optional: Add animation to hamburger lines
-            hamburgerLines[0].style.transform = sideMenu.classList.contains('open') 
-                ? 'rotate(45deg) translate(5px, 5px)' 
-                : 'rotate(0) translate(0)';
-            
-            hamburgerLines[1].style.opacity = sideMenu.classList.contains('open') 
-                ? '0' 
-                : '1';
-            
-            hamburgerLines[2].style.transform = sideMenu.classList.contains('open') 
-                ? 'rotate(-45deg) translate(5px, -5px)' 
-                : 'rotate(0) translate(0)';
-        }
+        
+    
+       // Hamburger Menu Toggle Function
+function toggleMenu() {
+    const sideMenu = document.querySelector('.side-menu');
+    const hamburgerLines = document.querySelectorAll('.hamburger-line');
+    
+    sideMenu.classList.toggle('open');
+    
+    // Animate hamburger lines
+    hamburgerLines[0].style.transform = sideMenu.classList.contains('open') 
+        ? 'rotate(45deg) translate(5px, 5px)' 
+        : 'rotate(0) translate(0)';
+    
+    hamburgerLines[1].style.opacity = sideMenu.classList.contains('open') 
+        ? '0' 
+        : '1';
+    
+    hamburgerLines[2].style.transform = sideMenu.classList.contains('open') 
+        ? 'rotate(-45deg) translate(5px, -5px)' 
+        : 'rotate(0) translate(0)';
+}
 
+// Close side menu when clicking outside
+document.addEventListener('click', (e) => {
+    const sideMenu = document.querySelector('.side-menu');
+    if (sideMenu.classList.contains('open') && 
+        !e.target.closest('.side-menu') && 
+        !e.target.closest('.hamburger-menu')) {
+        toggleMenu();
+    }
+});
+
+// Hamburger menu click event
+document.querySelector('.hamburger-menu').addEventListener('click', function(e) {
+    e.stopPropagation(); // Prevent the click from triggering the document click listener
+    toggleMenu();
+});
+
+        // Format time for countdown display
+        function formatTimeLeft(totalHours) {
+            const days = Math.floor(totalHours / 24);
+            const hours = Math.floor(totalHours % 24);
+            const minutes = Math.floor((totalHours * 60) % 60);
+            
+            let timeString = '';
+            if (days > 0) {
+                timeString += `${days}d `;
+            }
+            if (hours > 0 || days > 0) {
+                timeString += `${hours}h `;
+            }
+            timeString += `${minutes}m`;
+            
+            return timeString;
+        }
+        
+        // Update all countdowns
+        function updateCountdowns() {
+            const countdownElements = document.querySelectorAll('.countdown');
+            
+            countdownElements.forEach(element => {
+                let timeLeft = parseFloat(element.getAttribute('data-time-left')) - (1/60); // Subtract 1 minute
+                
+                if (timeLeft <= 0) {
+                    timeLeft = 0;
+                    element.textContent = "Expired!";
+                    element.classList.add('urgent');
+                } else {
+                    element.setAttribute('data-time-left', timeLeft);
+                    element.textContent = formatTimeLeft(timeLeft);
+                    
+                    // Add urgent class if less than 24 hours left
+                    if (timeLeft < 24) {
+                        element.classList.add('urgent');
+                    } else {
+                        element.classList.remove('urgent');
+                    }
+                }
+            });
+        }
+    
+        // Add this function to simulate file download
+        function simulateDownload(orderId) {
+            // Create a downloading notification
+            const downloadNotification = document.createElement('div');
+            downloadNotification.className = 'download-notification';
+            downloadNotification.style.position = 'fixed';
+            downloadNotification.style.bottom = '20px';
+            downloadNotification.style.right = '20px';
+            downloadNotification.style.backgroundColor = '#333';
+            downloadNotification.style.color = '#e0e0e0';
+            downloadNotification.style.borderRadius = '8px';
+            downloadNotification.style.padding = '15px 20px';
+            downloadNotification.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
+            downloadNotification.style.zIndex = '2000';
+            downloadNotification.style.display = 'flex';
+            downloadNotification.style.alignItems = 'center';
+            downloadNotification.style.gap = '10px';
+            
+            // Add loading spinner
+            downloadNotification.innerHTML = `
+                <div class="download-spinner" style="width: 20px; height: 20px; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #4db8ff; animation: spin 1s linear infinite;"></div>
+                <div>
+                    <div style="font-weight: 500; margin-bottom: 3px;">Downloading files</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Order ${orderId}</div>
+                </div>
+            `;
+            
+            // Add CSS animation for spinner
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Add notification to document
+            document.body.appendChild(downloadNotification);
+            
+            // Animate in
+            gsap.from(downloadNotification, {
+                opacity: 0,
+                y: 20,
+                duration: 0.3
+            });
+            
+            // Simulate download completion after 3 seconds
+            setTimeout(() => {
+                downloadNotification.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4db8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <div>
+                        <div style="font-weight: 500; margin-bottom: 3px;">Download complete</div>
+                        <div style="font-size: 12px; opacity: 0.8;">Order ${orderId}</div>
+                    </div>
+                `;
+                
+                // Remove notification after 2 more seconds
+                setTimeout(() => {
+                    gsap.to(downloadNotification, {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.3,
+                        onComplete: () => {
+                            document.body.removeChild(downloadNotification);
+                        }
+                    });
+                }, 2000);
+                
+                // In a real application, this is where you would actually trigger the file download
+                // For demo purposes, we'll create a fake file download
+                const fileName = `Order_${orderId}_Files.zip`;
+                const dummyLink = document.createElement('a');
+                dummyLink.setAttribute('href', 'data:application/zip;charset=utf-8,' + encodeURIComponent('This is a placeholder for order files'));
+                dummyLink.setAttribute('download', fileName);
+                dummyLink.style.display = 'none';
+                document.body.appendChild(dummyLink);
+                dummyLink.click();
+                document.body.removeChild(dummyLink);
+                
+            }, 3000);
+        }
+    
         document.addEventListener('DOMContentLoaded', function() {
-            // Sample data (same as previous script)
+            // Sample data (modified to include deadlines)
             const servicesData = [
                 { 
                     orderId: "ORD-2023-001", 
                     price: "₹1,499", 
                     subject: "Web Development", 
-                    tags: ["WordPress", "E-commerce", "Responsive"], 
                     orderBy: "John Doe",
-                    status: "available"
+                    status: "available",
+                    timeLeft: 72.5, // hours
+                    description: "Looking for someone to develop a responsive WordPress e-commerce website with custom theme integration. The site should have product catalog, shopping cart, and payment gateway integration. Mobile-friendly design is a must."
                 },
                 { 
                     orderId: "ORD-2023-002", 
                     price: "₹2,999", 
                     subject: "Logo Design", 
-                    tags: ["Branding", "Vector", "Creative"], 
                     orderBy: "Jane Smith",
-                    status: "available" 
+                    status: "available",
+                    timeLeft: 48.0, // hours
+                    description: "Need a professional, modern logo design for a new fitness brand. Looking for something clean, memorable and versatile that works across digital and print mediums. Vector format required with multiple color variations."
                 },
                 { 
                     orderId: "ORD-2023-003", 
                     price: "₹899", 
                     subject: "Content Writing", 
-                    tags: ["SEO", "Blog", "Marketing"], 
                     orderBy: "Alex Johnson",
-                    status: "taken" 
+                    status: "taken",
+                    timeLeft: 12.5, // hours
+                    description: "Seeking a content writer for 5 SEO-optimized blog posts for a marketing website. Each article should be 1500-2000 words and include relevant keywords. Topics focus on digital marketing strategies and social media optimization."
                 },
                 { 
                     orderId: "ORD-2023-004", 
                     price: "₹4,999", 
                     subject: "Mobile App Development", 
-                    tags: ["Android", "iOS", "Flutter"], 
                     orderBy: "Michael Brown",
-                    status: "available" 
+                    status: "available",
+                    timeLeft: 120.0, // hours
+                    description: "Looking for an experienced developer to create a cross-platform mobile app using Flutter. The app is a fitness tracker with features including workout planning, progress tracking, and social sharing capabilities. Both Android and iOS versions required."
                 },
                 { 
                     orderId: "ORD-2023-005", 
                     price: "₹1,299", 
                     subject: "Digital Marketing", 
-                    tags: ["Social Media", "Google Ads", "Analytics"], 
                     orderBy: "Emily Davis",
-                    status: "available" 
+                    status: "available",
+                    timeLeft: 6.25, // hours
+                    description: "Need a comprehensive digital marketing campaign for a new restaurant. Services should include social media management, Google Ads setup and management, and performance analytics. Campaign duration: 3 months with regular reporting."
                 }
             ];
             
@@ -581,16 +767,27 @@
                         Taken
                       </button>`;
                 
+                // Determine urgency class for countdown
+                const isUrgent = service.timeLeft < 24 ? 'urgent' : '';
+                
                 serviceItem.innerHTML = `
                     <div class="order-id" data-label="Order ID:">${service.orderId}</div>
                     <div class="price" data-label="Price:">${service.price}</div>
                     <div class="subject" data-label="Subject:">${service.subject}</div>
-                    <div class="tags" data-label="Tags:">
-                        ${service.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
                     <div class="order-by" data-label="Order By:">${service.orderBy}</div>
+                    <div class="countdown ${isUrgent}" data-label="Time Left:" data-time-left="${service.timeLeft}">
+                        <svg class="clock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        ${formatTimeLeft(service.timeLeft)}
+                    </div>
                     <div class="take-order-wrapper" data-label="Action:">
                         ${takeButtonHTML}
+                    </div>
+                    <div class="service-description-container">
+                        <div class="description-title">Description</div>
+                        <p>${service.description}</p>
                     </div>
                 `;
                 
@@ -603,55 +800,205 @@
                     duration: 0.5,
                     delay: 0.6 + (index * 0.1)
                 });
+                
+                // Add click event for expanded description
+                serviceItem.addEventListener('click', function(e) {
+                    // Don't toggle if clicking the take order button
+                    if (e.target.closest('.take-order-btn')) {
+                        return;
+                    }
+                    
+                    this.classList.toggle('expanded');
+                    
+                    // Animate expansion
+                    const descContainer = this.querySelector('.service-description-container');
+                    if (this.classList.contains('expanded')) {
+                        gsap.to(descContainer, {
+                            maxHeight: 300,
+                            opacity: 1,
+                            marginTop: 15,
+                            duration: 0.3
+                        });
+                    } else {
+                        gsap.to(descContainer, {
+                            maxHeight: 0,
+                            opacity: 0,
+                            marginTop: 0,
+                            duration: 0.3
+                        });
+                    }
+                });
             });
-            
+
             // Take order button functionality
             const takeOrderButtons = document.querySelectorAll('.take-order-btn:not(.taken)');
-            
+
             takeOrderButtons.forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function(e) {
+                    // Prevent the event from triggering parent elements
+                    e.stopPropagation();
+                    
                     const orderId = this.getAttribute('data-order-id');
                     
-                    // Button click animation
-                    gsap.to(this, {
-                        scale: 0.9,
-                        duration: 0.1,
-                        onComplete: () => {
-                            gsap.to(this, {
-                                scale: 1,
-                                duration: 0.1
-                            });
-                            
-                            // Change button to "Taken" state
-                            this.innerHTML = `
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
-                                    <path d="m9 12 2 2 4-4"></path>
-                                </svg>
-                                Taken
-                            `;
-                            this.classList.add('taken');
-                            this.disabled = true;
-                            
-                            // Show confirmation tooltip
-                            const tooltip = document.getElementById('tooltip');
-                            tooltip.textContent = `You have taken order ${orderId}`;
-                            tooltip.style.opacity = '1';
-                            tooltip.style.top = (this.getBoundingClientRect().top - 40) + 'px';
-                            tooltip.style.left = (this.getBoundingClientRect().left + (this.offsetWidth / 2) - (tooltip.offsetWidth / 2)) + 'px';
-                            
-                            // Hide tooltip after 3 seconds
-                            setTimeout(() => {
-                                gsap.to(tooltip, {
-                                    opacity: 0,
-                                    duration: 0.3
-                                });
-                            }, 3000);
-                        }
+                    // Create custom confirmation dialog
+                    const confirmationDialog = document.createElement('div');
+                    confirmationDialog.className = 'confirmation-dialog';
+                    confirmationDialog.style.position = 'fixed';
+                    confirmationDialog.style.top = '50%';
+                    confirmationDialog.style.left = '50%';
+                    confirmationDialog.style.transform = 'translate(-50%, -50%)';
+                    confirmationDialog.style.backgroundColor = '#2a2a2a';
+                    confirmationDialog.style.border = '1px solid #444';
+                    confirmationDialog.style.borderRadius = '12px';
+                    confirmationDialog.style.padding = '20px';
+                    confirmationDialog.style.zIndex = '2000';
+                    confirmationDialog.style.minWidth = '300px';
+                    confirmationDialog.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.5)';
+                    
+                    confirmationDialog.innerHTML = `
+                        <h3 style="margin-bottom: 15px; color: #e0e0e0; font-size: 18px;">Take Order Confirmation</h3>
+                        <p style="margin-bottom: 20px; color: #ccc; font-size: 14px;">You are about to take order ${orderId}. Would you like to download the associated files?</p>
+                        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                            <button class="cancel-btn" style="padding: 8px 15px; background-color: #3a3a3a; color: #ccc; border: none; border-radius: 6px; cursor: pointer;">Cancel</button>
+                            <button class="download-no-btn" style="padding: 8px 15px; background-color: #3a3a3a; color: #ccc; border: none; border-radius: 6px; cursor: pointer;">No, Just Take Order</button>
+                            <button class="download-yes-btn" style="padding: 8px 15px; background-color: #4db8ff; color: #1a1a1a; border: none; border-radius: 6px; cursor: pointer;">Yes, Download Files</button>
+                        </div>
+                    `;
+                    
+                    // Create overlay
+                    const overlay = document.createElement('div');
+                    overlay.style.position = 'fixed';
+                    overlay.style.top = '0';
+                    overlay.style.left = '0';
+                    overlay.style.right = '0';
+                    overlay.style.bottom = '0';
+                    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+                    overlay.style.zIndex = '1999';
+                    
+                    // Add to document
+                    document.body.appendChild(overlay);
+                    document.body.appendChild(confirmationDialog);
+                    
+                    // Animation for dialog
+                    gsap.from(confirmationDialog, {
+                        opacity: 0,
+                        y: -20,
+                        duration: 0.3
                     });
                     
-                    // In a real application, you would send an API request here to update the order status
-                    console.log(`Order ${orderId} has been taken`);
+                    // Attach event listeners
+                    const cancelBtn = confirmationDialog.querySelector('.cancel-btn');
+                    const downloadNoBtn = confirmationDialog.querySelector('.download-no-btn');
+                    const downloadYesBtn = confirmationDialog.querySelector('.download-yes-btn');
+                    
+                    // Cancel button
+                    cancelBtn.addEventListener('click', () => {
+                        gsap.to(confirmationDialog, {
+                            opacity: 0,
+                            y: -20,
+                            duration: 0.3,
+                            onComplete: () => {
+                                document.body.removeChild(confirmationDialog);
+                                document.body.removeChild(overlay);
+                            }
+                        });
+                    });
+                    
+                    // Function to handle taking the order
+                    const takeOrder = () => {
+                        // Change button to "Taken" state
+                        this.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                                <path d="m9 12 2 2 4-4"></path>
+                            </svg>
+                            Taken
+                        `;
+                        this.classList.add('taken');
+                        this.disabled = true;
+                        
+                        // Show confirmation tooltip
+                        const tooltip = document.getElementById('tooltip');
+                        tooltip.textContent = `You have taken order ${orderId}`;
+                        tooltip.style.opacity = '1';
+                        tooltip.style.top = (this.getBoundingClientRect().top - 40) + 'px';
+                        tooltip.style.left = (this.getBoundingClientRect().left + (this.offsetWidth / 2) - (tooltip.offsetWidth / 2)) + 'px';
+                        
+                        // Hide tooltip after 3 seconds
+                        setTimeout(() => {
+                            gsap.to(tooltip, {
+                                opacity: 0,
+                                duration: 0.3
+                            });
+                        }, 3000);
+                    };
+                    
+                    // Just take order, no download
+                    downloadNoBtn.addEventListener('click', () => {
+                        // Button click animation
+                        gsap.to(this, {
+                            scale: 0.9,
+                            duration: 0.1,
+                            onComplete: () => {
+                                gsap.to(this, {
+                                    scale: 1,
+                                    duration: 0.1
+                                });
+                                
+                                // Close the dialog
+                                gsap.to(confirmationDialog, {
+                                    opacity: 0,
+                                    y: -20,
+                                    duration: 0.3,
+                                    onComplete: () => {
+                                        document.body.removeChild(confirmationDialog);
+                                        document.body.removeChild(overlay);
+                                        
+                                        // Take the order
+                                        takeOrder();
+                                    }
+                                });
+                            }
+                        });
+                        
+                        // In a real application, you would send an API request here to update the order status
+                        console.log(`Order ${orderId} has been taken without downloading files`);
+                    });
+                    
+                    // Take order and download files
+                    downloadYesBtn.addEventListener('click', () => {
+                        // Button click animation
+                        gsap.to(this, {
+                            scale: 0.9,
+                            duration: 0.1,
+                            onComplete: () => {
+                                gsap.to(this, {
+                                    scale: 1,
+                                    duration: 0.1
+                                });
+                                
+                                // Close the dialog
+                                gsap.to(confirmationDialog, {
+                                    opacity: 0,
+                                    y: -20,
+                                    duration: 0.3,
+                                    onComplete: () => {
+ document.body.removeChild(confirmationDialog);
+                                        document.body.removeChild(overlay);
+                                        
+                                        // Take the order
+                                        takeOrder();
+                                        
+                                        // Simulate file download
+                                        simulateDownload(orderId);
+                                    }
+                                });
+                            }
+                        });
+                        
+                        // In a real application, you would send an API request here to update the order status
+                        console.log(`Order ${orderId} has been taken with file download`);
+                    });
                 });
             });
             
@@ -684,34 +1031,257 @@
                 });
             });
             
-            // Pagination functionality
-            const pageButtons = document.querySelectorAll('.page-btn');
-            
-            pageButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    pageButtons.forEach(b => b.classList.remove('active'));
+            // Filter dropdown functionality
+            const filterBtn = document.querySelector('.filter-btn');
+            const servicesItems = document.querySelectorAll('.service-item');
+    
+            // Create filter dropdown menu
+            const createFilterDropdown = () => {
+                // Remove existing dropdown if it exists
+                const existingDropdown = document.querySelector('.filter-dropdown-menu');
+                if (existingDropdown) {
+                    existingDropdown.remove();
+                    return;
+                }
+                
+                // Create dropdown element
+                const dropdownMenu = document.createElement('div');
+                dropdownMenu.className = 'filter-dropdown-menu';
+                dropdownMenu.style.position = 'absolute';
+                dropdownMenu.style.top = '100%';
+                dropdownMenu.style.left = '0';
+                dropdownMenu.style.marginTop = '5px';
+                dropdownMenu.style.width = '200px';
+                dropdownMenu.style.backgroundColor = '#2a2a2a';
+                dropdownMenu.style.borderRadius = '8px';
+                dropdownMenu.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
+                dropdownMenu.style.zIndex = '100';
+                dropdownMenu.style.overflow = 'hidden';
+                
+                // Add filter options
+                const filterOptions = [
+                    { id: 'all', label: 'All Services' },
+                    { id: 'available', label: 'Available Only' },
+                    { id: 'taken', label: 'Taken Only' },
+                    { id: 'urgent', label: 'Urgent (< 24h)' },
+                    { id: 'price-asc', label: 'Price: Low to High' },
+                    { id: 'price-desc', label: 'Price: High to Low' }
+                ];
+                
+                filterOptions.forEach(option => {
+                    const optionEl = document.createElement('div');
+                    optionEl.className = 'filter-option';
+                    optionEl.textContent = option.label;
+                    optionEl.style.padding = '12px 15px';
+                    optionEl.style.borderBottom = '1px solid #333';
+                    optionEl.style.cursor = 'pointer';
+                    optionEl.style.transition = 'background-color 0.2s ease';
                     
-                    // Add active class to clicked button
-                    this.classList.add('active');
+                    optionEl.addEventListener('mouseenter', () => {
+                        optionEl.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                    });
                     
-                    // Animate page change
-                    const serviceItems = document.querySelectorAll('.service-item');
+                    optionEl.addEventListener('mouseleave', () => {
+                        optionEl.style.backgroundColor = 'transparent';
+                    });
                     
-                    gsap.to(serviceItems, {
+                    optionEl.addEventListener('click', () => {
+                        applyFilter(option.id);
+                        dropdownMenu.remove();
+                        
+                        // Update button text to show current filter
+                        filterBtn.innerHTML = `
+                            <svg class="filter-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                            </svg>
+                            ${option.label}
+                        `;
+                    });
+                    
+                    dropdownMenu.appendChild(optionEl);
+                });
+                
+                document.querySelector('.filter-dropdown').appendChild(dropdownMenu);
+                
+                // Add event listener to close dropdown when clicking outside
+                const closeDropdown = (e) => {
+                    if (!dropdownMenu.contains(e.target) && e.target !== filterBtn) {
+                        dropdownMenu.remove();
+                        document.removeEventListener('click', closeDropdown);
+                    }
+                };
+                
+ // Delay adding the event listener to prevent it from triggering immediately
+                setTimeout(() => {
+                    document.addEventListener('click', closeDropdown);
+                }, 0);
+            };
+    
+            // Filter button click event
+            filterBtn.addEventListener('click', createFilterDropdown);
+    
+            // Function to apply the selected filter
+            const applyFilter = (filterId) => {
+                // Get all service items
+                const serviceItems = document.querySelectorAll('.service-item');
+                
+                // Animation settings for showing/hiding items
+                const hideItem = (item) => {
+                    gsap.to(item, {
                         opacity: 0,
-                        y: 10,
+                        height: 0,
+                        marginBottom: 0,
                         duration: 0.3,
-                        stagger: 0.05,
                         onComplete: () => {
-                            gsap.to(serviceItems, {
-                                opacity: 1,
-                                y: 0,
-                                duration: 0.3,
-                                stagger: 0.05
-                            });
+                            item.style.display = 'none';
                         }
                     });
+                };
+                
+                const showItem = (item) => {
+                    item.style.display = 'grid';
+                    gsap.to(item, {
+                        opacity: 1,
+                        height: 'auto',
+                        marginBottom: '15px',
+                        duration: 0.3
+                    });
+                };
+                
+                // Apply the appropriate filter
+                serviceItems.forEach(item => {
+                    const hasButton = item.querySelector('.take-order-btn');
+                    const isAvailable = hasButton && !hasButton.classList.contains('taken');
+                    const isTaken = hasButton && hasButton.classList.contains('taken');
+                    const isUrgent = item.querySelector('.countdown.urgent') !== null;
+                    
+                    // Extract price value for sorting
+                    const priceText = item.querySelector('.price').textContent;
+                    const priceValue = parseInt(priceText.replace(/[^\d]/g, ''));
+                    
+                    switch(filterId) {
+                        case 'all':
+                            showItem(item);
+                            break;
+                        case 'available':
+                            isAvailable ? showItem(item) : hideItem(item);
+                            break;
+                        case 'taken':
+                            isTaken ? showItem(item) : hideItem(item);
+                            break;
+                        case 'urgent':
+                            isUrgent ? showItem(item) : hideItem(item);
+                            break;
+                        case 'price-asc':
+                            // Store price value as data attribute for sorting
+                            item.setAttribute('data-price', priceValue);
+                            showItem(item);
+                            break;
+                        case 'price-desc':
+                            // Store price value as data attribute for sorting
+                            item.setAttribute('data-price', priceValue);
+                            showItem(item);
+                            break;
+                    }
+                });
+                
+                // Handle price sorting if selected
+                if (filterId === 'price-asc' || filterId === 'price-desc') {
+                    const servicesList = document.querySelector('.services-list');
+                    const serviceHeader = servicesList.querySelector('.service-header');
+                    
+                    // Get all service items as an array (excluding the header)
+                    const itemsArray = Array.from(serviceItems);
+                    
+                    // Sort the array based on price
+                    itemsArray.sort((a, b) => {
+                        const priceA = parseInt(a.getAttribute('data-price'));
+                        const priceB = parseInt(b.getAttribute('data-price'));
+                        
+                        return filterId === 'price-asc' ? priceA - priceB : priceB - priceA;
+                    });
+                    
+                    // Remove all items from the DOM
+                    serviceItems.forEach(item => item.remove());
+                    
+                    // Re-add the header and sorted items
+                    servicesList.appendChild(serviceHeader);
+                    itemsArray.forEach((item, index) => {
+                        servicesList.appendChild(item);
+                        // Staggered re-animation of the sorted items
+                        gsap.fromTo(item, 
+                            { opacity: 0, y: 20 },
+                            { 
+                                opacity: 1, 
+                                y: 0, 
+                                duration: 0.3, 
+                                delay: index * 0.05 
+                            }
+                        );
+                    });
+                }
+            };
+            
+            // Start countdown update interval
+            setInterval(updateCountdowns, 60000); // Update every minute
+            
+            // Initial countdown display
+            updateCountdowns();
+            
+            // Hamburger menu functionality
+            const hamburgerBtn = document.querySelector('.hamburger-menu');
+            hamburgerBtn.addEventListener('click', toggleMenu);
+            
+            // Close side menu when clicking outside
+            document.addEventListener('click', (e) => {
+                const sideMenu = document.querySelector('.side-menu');
+                if (sideMenu.classList.contains('open') && 
+                    !e.target.closest('.side-menu') && 
+                    !e.target.closest('.hamburger-menu')) {
+                    toggleMenu();
+                }
+            });
+            
+            // Create tooltip element for order confirmations
+            const tooltip = document.createElement('div');
+            tooltip.id = 'tooltip';
+            tooltip.style.position = 'fixed';
+            tooltip.style.padding = '8px 12px';
+            tooltip.style.backgroundColor = '#4db8ff';
+            tooltip.style.color = '#1a1a1a';
+            tooltip.style.borderRadius = '4px';
+            tooltip.style.fontSize = '14px';
+            tooltip.style.fontWeight = '500';
+            tooltip.style.zIndex = '1000';
+            tooltip.style.opacity = '0';
+            tooltip.style.pointerEvents = 'none';
+            tooltip.style.transition = 'opacity 0.3s ease';
+            document.body.appendChild(tooltip);
+            
+            // Pagination functionality (simplified for demo)
+            const paginationLinks = document.querySelectorAll('.pagination a');
+            paginationLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    paginationLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // In a real application, you would load new data here
+                    // For the demo, we'll just show a loading animation
+                    
+                    // Show loading state
+                    const servicesList = document.querySelector('.services-list');
+                    servicesList.style.opacity = '0.5';
+                    
+                    // Simulate loading delay
+                    setTimeout(() => {
+                        // Restore opacity
+                        servicesList.style.opacity = '1';
+                    }, 800);
                 });
             });
         });

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feynman Dashboard</title>
+    <title> Dashboard</title>
     <style>
         :root {
             --primary-bg: #202123;
@@ -11,6 +11,7 @@
             --text-color: #d8d4d4;
             --accent-color: #d765cc;
             --hover-color: #007bff;
+            --notification-color: #f44336;
         }
 
         * {
@@ -25,6 +26,8 @@
             color: var(--text-color);
             line-height: 1.4;
             font-size: 14px;
+            position: relative;
+            overflow-x: hidden;
         }
 
         .container {
@@ -45,6 +48,8 @@
             padding: 10px 15px;
             background-color: var(--secondary-bg);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1000;
         }
 
         .logo img {
@@ -53,27 +58,220 @@
             border-radius: 50%;
         }
 
-        .nav-menu {
+        .header-right {
             display: flex;
-            list-style: none;
+            align-items: center;
             gap: 15px;
-            font-size: 13px;
         }
 
-        .nav-menu a {
+        /* Hamburger menu button */
+        .menu-toggle {
+            cursor: pointer;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            display: block;
+        }
+
+        /* Removed nav-menu display as we'll only use the hamburger */
+        .nav-menu {
+            display: none;
+        }
+
+        /* Notifications */
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--notification-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notifications-panel {
+            position: absolute;
+            top: 60px;
+            right: 15px;
+            width: 300px;
+            background-color: var(--secondary-bg);
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notifications-header {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notifications-header h3 {
+            font-size: 14px;
+        }
+
+        .mark-all-read {
+            font-size: 12px;
+            color: var(--accent-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .notification-list {
+            list-style: none;
+        }
+
+        .notification-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .notification-item:hover {
+            background-color: rgba(45, 45, 48, 0.8);
+        }
+
+        .notification-item.unread {
+            position: relative;
+        }
+
+        .notification-item.unread::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+        }
+
+        .notification-content {
+            padding-left: 10px;
+        }
+
+        .notification-title {
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .empty-notifications {
+            padding: 30px;
+            text-align: center;
+            color: #aaa;
+        }
+
+        /* Mobile Menu Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .sidebar-menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 250px;
+            height: 100%;
+            background-color: var(--secondary-bg);
+            z-index: 1000;
+            padding: 60px 20px 20px;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-menu.active {
+            left: 0;
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-nav a {
             text-decoration: none;
             color: var(--text-color);
-            transition: color 0.3s ease;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
         }
 
-        .nav-menu a:hover {
+        .sidebar-nav a:hover {
+            background-color: rgba(215, 101, 204, 0.1);
             color: var(--accent-color);
         }
 
-        .menu-toggle {
-            display: none;
-            cursor: pointer;
-            font-size: 20px;
+        .sidebar-profile {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+            padding-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .sidebar-profile-info h4 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-profile-info p {
+            font-size: 12px;
+            color: #aaa;
         }
 
         /* Profile Section */
@@ -123,6 +321,38 @@
             padding: 10px;
             border-radius: 8px;
             font-size: 12px;
+        }
+
+        /* Tracking Page Toggle Styles */
+        .tracking-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .toggle-btn {
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .toggle-btn:first-child {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+        .toggle-btn:last-child {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+
+        .toggle-btn.active {
+            background-color: var(--accent-color);
+            color: white;
         }
 
         /* Order Tracking Styles */
@@ -215,105 +445,39 @@
             margin-bottom: 15px;
         }
 
-        .progress-track {
-            height: 5px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background-color: var(--accent-color);
-            border-radius: 5px;
-            width: 0;
-            transition: width 0.5s ease;
-        }
-
-        .tracker-step {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .tracker-icon {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+        .completed-status {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
+            flex-direction: column;
+            padding: 30px 0;
         }
 
-        .tracker-icon svg {
-            width: 20px;
-            height: 20px;
-            color: var(--text-color);
-        }
-
-        .tracker-step.completed .tracker-icon {
-            background-color: var(--accent-color);
-        }
-
-        .tracker-step.active .tracker-icon {
-            border: 2px solid var(--accent-color);
-        }
-
-        .steps-list {
-            margin-top: 15px;
-        }
-
-        .step-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            opacity: 0;
-        }
-
-        .step-indicator {
-            width: 30px;
-            height: 30px;
+        .completed-icon {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
+            background-color: var(--accent-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
+            margin-bottom: 20px;
         }
 
-        .step-item.completed .step-indicator {
-            background-color: var(--accent-color);
+        .completed-icon svg {
+            width: 50px;
+            height: 50px;
             color: white;
         }
 
-        .step-item.current .step-indicator .pulse {
-            width: 20px;
-            height: 20px;
-            background-color: var(--accent-color);
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
+        .completed-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(0.8); opacity: 0.7; }
-            50% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(0.8); opacity: 0.7; }
-        }
-
-        .step-content {
-            flex-grow: 1;
-        }
-
-        .step-content h3 {
-            font-size: 14px;
-            margin-bottom: 3px;
-        }
-
-        .step-content p {
-            font-size: 12px;
+        .completed-date {
+            font-size: 16px;
             color: #aaa;
         }
 
@@ -326,6 +490,25 @@
             border-radius: 50%;
             margin-right: 0.5rem;
             animation: spin 1s linear infinite;
+        }
+
+        .in-progress-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #2196F3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .in-progress-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 30px 0;
         }
 
         @keyframes spin {
@@ -372,48 +555,81 @@
                 grid-template-columns: 1fr;
             }
 
-            .menu-toggle {
-                display: block;
-            }
-
-            .nav-menu {
-                display: none;
-                flex-direction: column;
+            .notifications-panel {
                 width: 100%;
-                position: absolute;
-                top: 60px;
+                right: 0;
                 left: 0;
-                background-color: var(--secondary-bg);
-                padding: 15px;
+                top: 60px;
+                border-radius: 0;
             }
-
-            .nav-menu.active {
-                display: flex;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
+    <div class="overlay" id="overlay"></div>
+    <div class="sidebar-menu" id="sidebar-menu">
+        <button class="close-menu" id="close-menu">&times;</button>
+        <ul class="sidebar-nav">
+            <li><a href="../home/home.html">Home</a></li>
+            <li><a href="../upload/upload.html">Upload</a></li>
+            <li><a href="../poll/poll.html">Community</a></li>
+            <li><a href="../services/services.html">Services</a></li>
+            <li><a href="../aboutus.html">About us</a></li>
+            <li><a href="../contactus.html">Support</a></li>
+        </ul>
+        <div class="sidebar-profile">
+            <img src="../sharma.png" alt="Profile">
+            <div class="sidebar-profile-info">
+                <h4>sharma-ji-ka-beta</h4>
+                <p>Project himself</p>
+            </div>
+        </div>
+    </div>
+
     <header class="header container">
         <div class="logo">
-            <img src="../logo.png" alt="Feynman Logo">
+            <img src="../logo.png" alt="Logo">
         </div>
-        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-        <nav>
-            <ul class="nav-menu" id="nav-menu">
-                <li><a href="../home/home.html">Home</a></li>
-                <li><a href="../upload/upload.html">Upload</a></li>
-                <li><a href="../poll/poll.html">Community</a></li>
-                <li><a href="../services/services.html">services</a></li>
-               
-            </ul>
-        </nav>
+        <div class="header-right">
+            <button class="menu-toggle" id="menu-toggle">☰</button>
+            <!-- Removed the navigation menu -->
+            <div class="notification-icon" id="notification-toggle">
+                <span>🔔</span>
+                <span class="notification-count">3</span>
+            </div>
+            <div class="notifications-panel" id="notifications-panel">
+                <div class="notifications-header">
+                    <h3>Notifications</h3>
+                    <a class="mark-all-read" id="mark-all-read">Mark all as read</a>
+                </div>
+                <ul class="notification-list" id="notification-list">
+                    <li class="notification-item unread">
+                        <div class="notification-content">
+                            <div class="notification-title">Your order FY-2024-001 is complete</div>
+                            <div class="notification-time">2 hours ago</div>
+                        </div>
+                    </li>
+                    <li class="notification-item unread">
+                        <div class="notification-content">
+                            <div class="notification-title">platform update v2.3 is available</div>
+                            <div class="notification-time">Yesterday</div>
+                        </div>
+                    </li>
+                    <li class="notification-item unread">
+                        <div class="notification-content">
+                            <div class="notification-title">Your community post received 42 upvotes</div>
+                            <div class="notification-time">2 days ago</div>
+                        </div>
+                    </li>
+                    <li class="notification-item">
+                        <div class="notification-content">
+                            <div class="notification-title">Welcome to Dashboard!</div>
+                            <div class="notification-time">1 week ago</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </header>
 
     <main class="container">
@@ -427,18 +643,21 @@
             </div>
             <div class="profile-stats">
                 <div class="stat-item">
-                    <h3>Followers</h3>
-                    <p>Only others follow him</p>
-                </div>
-                <div class="stat-item">
                     <h3>Rating</h3>
                     <p>Only he rates others</p>
                 </div>
             </div>
         </section>
+        
+        <!-- Toggle for switching between tracking pages -->
+        <div class="tracking-toggle">
+            <button class="toggle-btn active" id="my-requests-btn">My Requests</button>
+            <button class="toggle-btn" id="helping-orders-btn">Orders I'm Helping With</button>
+        </div>
 
-        <section class="order-tracking-section">
-            <h2>Track Your Order</h2>
+        <!-- SECTION 1: Track orders you've requested -->
+        <section class="order-tracking-section" id="my-requests-section">
+            <h2>Track Your Requests</h2>
             <div id="tracking-form" class="tracking-card">
                 <form id="order-form">
                     <input 
@@ -457,8 +676,8 @@
                 <div class="result-header">
                     <div class="result-header-content">
                         <div>
-                            <h2 id="result-order-number">Order #ORD-12345</h2>
-                            <p id="result-customer-name">John Smith</p>
+                            <h2 id="result-order-number">Order #FY-2024-001</h2>
+                            <p id="result-customer-name">sharma-ji-ka-beta</p>
                         </div>
                         <button id="back-btn" class="back-btn">← Back</button>
                     </div>
@@ -468,94 +687,179 @@
                     <div class="order-details">
                         <div class="detail-item">
                             <p>Status</p>
-                            <p id="order-status">In Progress</p>
+                            <p id="order-status">Completed</p>
                         </div>
                         <div class="detail-item">
                             <p>Order Date</p>
                             <p id="order-date">2025-03-15</p>
                         </div>
                         <div class="detail-item">
-                            <p>Est. Completion</p>
+                            <p>Completion Date</p>
                             <p id="est-completion">2025-03-28</p>
                         </div>
                     </div>
                     
                     <div class="amazon-tracker">
-                        <div class="tracker-main">
-                            <div class="progress-track">
-                                <div class="progress-fill" id="amazon-progress"></div>
+                        <div class="completed-status">
+                            <div class="completed-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
                             </div>
-                            
-                            <div class="tracker-step" id="step-ordered">
-                                <div class="tracker-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                                    </svg>
-                                </div>
-                                <div class="tracker-info">
-                                    <div class="tracker-title">Ordered</div>
-                                    <div class="tracker-date" id="ordered-date">Mar 15</div>
-                                </div>
-                            </div>
-                            
-                            <div class="tracker-step" id="step-processing">
-                                <div class="tracker-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                                    </svg>
-                                </div>
-                                <div class="tracker-info">
-                                    <div class="tracker-title">Processing</div>
-                                    <div class="tracker-date" id="processing-date">Mar 17</div>
-                                </div>
-                            </div>
-                            
-                            <div class="tracker-step" id="step-completed">
-                                <div class="tracker-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </div>
-                                <div class="tracker-info">
-                                    <div class="tracker-title">Completed</div>
-                                    <div class="tracker-date" id="completed-date">Est. Mar 28</div>
-                                </div>
-                            </div>
+                            <div class="completed-text">Order Completed</div>
+                            <div class="completed-date" id="completed-date">March 28, 2025</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Track orders you're helping with -->
+        <section class="order-tracking-section hidden" id="helping-orders-section">
+            <h2>Orders You're Helping With</h2>
+            <div id="helping-tracking-form" class="tracking-card">
+                <form id="helping-order-form">
+                    <input 
+                        type="text" 
+                        id="helping-order-number" 
+                        placeholder="Enter order number you're helping with" 
+                        required
+                    >
+                    <button type="submit" id="helping-track-btn">
+                        Track Order
+                    </button>
+                </form>
+            </div>
+
+            <div id="helping-result-view" class="result-card hidden">
+                <div class="result-header">
+                    <div class="result-header-content">
+                        <div>
+                            <h2 id="helping-result-order-number">Order #FY-2024-002</h2>
+                            <p id="helping-result-customer-name">Customer: john_doe</p>
+                        </div>
+                        <button id="helping-back-btn" class="back-btn">← Back</button>
+                    </div>
+                </div>
+                
+                <div class="result-body">
+                    <div class="order-details">
+                        <div class="detail-item">
+                            <p>Status</p>
+                            <p id="helping-order-status">In Progress</p>
+                        </div>
+                        <div class="detail-item">
+                            <p>Order Date</p>
+                            <p id="helping-order-date">2025-03-25</p>
+                        </div>
+                        <div class="detail-item">
+                            <p>Expected Completion</p>
+                            <p id="helping-est-completion">2025-04-05</p>
                         </div>
                     </div>
                     
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    <div class="amazon-tracker">
+                        <div class="in-progress-status">
+                            <div class="in-progress-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="completed-text">In Progress</div>
+                            <div class="completed-date" id="helping-deadline">Due by April 5, 2025</div>
+                            <button class="toggle-btn active" style="margin-top: 20px;" onclick="window.location.href='uploadComp.html'">Submit</button>
                         </div>
-                        <div class="progress-points" id="progress-points">
-                            <!-- Progress points will be added dynamically -->
-                        </div>
-                    </div>
-                    
-                    <div class="steps-list" id="steps-list">
-                        <!-- Steps will be added dynamically -->
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="footer">
-        <p>We've just launched Feynman</p>
-        <div>
-            <a href="#">Learn More on our Blog ↗</a>
-            <a href="#">View our Introduction Video on YouTube ↗</a>
-        </div>
+    <footer class="footer" style="margin-top: 120px; ;">
+        <p>We've just launched</p>
     </footer>
 
     <script>
-        function toggleMenu() {
-            const navMenu = document.getElementById('nav-menu');
-            navMenu.classList.toggle('active');
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
+            // Hamburger menu functionality
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebarMenu = document.getElementById('sidebar-menu');
+            const closeMenu = document.getElementById('close-menu');
+            const overlay = document.getElementById('overlay');
+            
+            menuToggle.addEventListener('click', function() {
+                sidebarMenu.classList.add('active');
+                overlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            function closeMenuHandler() {
+                sidebarMenu.classList.remove('active');
+                overlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            closeMenu.addEventListener('click', closeMenuHandler);
+            overlay.addEventListener('click', closeMenuHandler);
+            
+            // Notifications functionality
+            const notificationToggle = document.getElementById('notification-toggle');
+            const notificationsPanel = document.getElementById('notifications-panel');
+            const markAllRead = document.getElementById('mark-all-read');
+            const notificationItems = document.querySelectorAll('.notification-item');
+            const notificationCount = document.querySelector('.notification-count');
+            
+            let isPanelOpen = false;
+            
+            notificationToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                isPanelOpen = !isPanelOpen;
+                
+                if (isPanelOpen) {
+                    notificationsPanel.style.display = 'block';
+                } else {
+                    notificationsPanel.style.display = 'none';
+                }
+            });
+            
+            // Close notifications panel when clicking outside
+            document.addEventListener('click', function(e) {
+                if (isPanelOpen && !notificationsPanel.contains(e.target) && e.target !== notificationToggle) {
+                    notificationsPanel.style.display = 'none';
+                    isPanelOpen = false;
+                }
+            });
+            
+            // Mark all as read functionality
+            markAllRead.addEventListener('click', function() {
+                document.querySelectorAll('.notification-item.unread').forEach(item => {
+                    item.classList.remove('unread');
+                });
+                notificationCount.style.display = 'none';
+            });
+            
+            // Click on individual notifications
+            notificationItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (item.classList.contains('unread')) {
+                        item.classList.remove('unread');
+                        updateNotificationCount();
+                    }
+                });
+            });
+            
+            function updateNotificationCount() {
+                const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+                notificationCount.textContent = unreadCount;
+                
+                if (unreadCount === 0) {
+                    notificationCount.style.display = 'none';
+                } else {
+                    notificationCount.style.display = 'flex';
+                }
+            }
+            
+            // Order tracking functionality
             const orderForm = document.getElementById('order-form');
             const trackingForm = document.getElementById('tracking-form');
             const resultView = document.getElementById('result-view');
@@ -563,40 +867,13 @@
             const trackBtn = document.getElementById('track-btn');
             const orderNumberInput = document.getElementById('order-number');
             
-            // Result elements
-            const resultOrderNumber = document.getElementById('result-order-number');
-            const resultCustomerName = document.getElementById('result-customer-name');
-            const orderStatus = document.getElementById('order-status');
-            const orderDate = document.getElementById('order-date');
-            const estCompletion = document.getElementById('est-completion');
-            const progressFill = document.getElementById('progress-fill');
-            const progressPoints = document.getElementById('progress-points');
-            const stepsList = document.getElementById('steps-list');
-            
-            // Amazon tracker elements
-            const amazonProgress = document.getElementById('amazon-progress');
-            const stepOrdered = document.getElementById('step-ordered');
-            const stepProcessing = document.getElementById('step-processing');
-            const stepCompleted = document.getElementById('step-completed');
-            const orderedDate = document.getElementById('ordered-date');
-            const processingDate = document.getElementById('processing-date');
-            const completedDate = document.getElementById('completed-date');
-            
             // Sample order data (in a real app, this would come from your API)
             const mockOrderData = {
                 orderNumber: 'FY-2024-001',
                 customerName: 'sharma-ji-ka-beta',
-                status: 'In Progress',
+                status: 'Completed',
                 created: '2025-03-15',
-                estimated: '2025-03-28',
-                currentStep: 2, // 0-based index of the current step (0=ordered, 1=processing, 2=completed)
-                steps: [
-                    { id: 1, title: 'Order Received', completed: true, date: '2025-03-15' },
-                    { id: 2, title: 'Processing', completed: true, date: '2025-03-17' },
-                    { id: 3, title: 'In Progress', completed: false, date: 'Est. 2025-03-22' },
-                    { id: 4, title: 'Quality Check', completed: false, date: 'Est. 2025-03-25' },
-                    { id: 5, title: 'Completed', completed: false, date: 'Est. 2025-03-28' }
-                ]
+                completed: '2025-03-28'
             };
             
             // Event listeners
@@ -631,131 +908,106 @@
             
             function displayOrderData(data) {
                 // Set basic info
-                resultOrderNumber.textContent = `Order #${data.orderNumber}`;
-                resultCustomerName.textContent = data.customerName;
-                orderStatus.textContent = data.status;
-                orderDate.textContent = data.created;
-                estCompletion.textContent = data.estimated;
+                document.getElementById('result-order-number').textContent = `Order #${data.orderNumber}`;
+                document.getElementById('result-customer-name').textContent = data.customerName;
+                document.getElementById('order-status').textContent = data.status;
+                document.getElementById('order-date').textContent = data.created;
+                document.getElementById('est-completion').textContent = data.completed;
                 
-                // Calculate progress
-                const completedSteps = data.steps.filter(step => step.completed).length;
-                const progressPercentage = (completedSteps / data.steps.length) * 100;
-                
-                // Format dates for Amazon tracker
-                const createdDate = new Date(data.created);
-                const estimatedDate = new Date(data.estimated);
-                orderedDate.textContent = createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                
-                // Get the processing start date from steps
-                const processingStep = data.steps.find(step => step.title.includes('Processing'));
-                if (processingStep) {
-                    const processingStartDate = new Date(processingStep.date);
-                    processingDate.textContent = processingStartDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                }
-                
-                completedDate.textContent = `Est. ${estimatedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-                
-                // Update Amazon tracker states based on current step
-                updateAmazonTracker(data);
-                
-                // Update progress bar (with animation)
-                setTimeout(() => {
-                    progressFill.style.width = `${progressPercentage}%`;
-                }, 100);
-                
-                // Create progress points
-                progressPoints.innerHTML = '';
-                data.steps.forEach(step => {
-                    const point = document.createElement('div');
-                    point.className = `progress-point ${step.completed ? 'active' : ''}`;
-                    progressPoints.appendChild(point);
-                });
-                
-                // Create steps list
-                stepsList.innerHTML = '';
-                data.steps.forEach((step, index) => {
-                    const stepEl = document.createElement('div');
-                    
-                    if (step.completed) {
-                        stepEl.className = 'step-item completed';
-                    } else if (index === data.steps.findIndex(s => !s.completed)) {
-                        stepEl.className = 'step-item current';
-                    } else {
-                        stepEl.className = 'step-item';
-                    }
-                    
-                    // Add animation delay
-                    stepEl.style.animationDelay = `${0.6 + index * 0.1}s`;
-                    
-                    // Create step content
-                    stepEl.innerHTML = `
-                        <div class="step-indicator">
-                            ${step.completed 
-                                ? '<svg class="checkmark" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>'
-                                : index === data.steps.findIndex(s => !s.completed)
-                                    ? '<div class="pulse"></div>'
-                                    : step.id
-                            }
-                        </div>
-                        <div class="step-content">
-                            <h3>${step.title}</h3>
-                            <p>${step.date}</p>
-                        </div>
-                    `;
-                    
-                    stepsList.appendChild(stepEl);
-                    
-                    // Trigger animation
-                    setTimeout(() => {
-                        stepEl.style.animation = 'fadeInDown 0.5s ease-out forwards';
-                    }, 10);
+                // Format the completion date
+                const completedDate = new Date(data.completed);
+                document.getElementById('completed-date').textContent = completedDate.toLocaleDateString('en-US', { 
+                    year: 'numeric',
+                    month: 'long', 
+                    day: 'numeric'
                 });
             }
-            
-            function updateAmazonTracker(data) {
-                // Reset all steps
-                stepOrdered.className = 'tracker-step';
-                stepProcessing.className = 'tracker-step';
-                stepCompleted.className = 'tracker-step';
-                
-                // Determine progress percentage for the Amazon tracker
-                let progressWidth = 0;
-                
-                // Update tracker based on the currentStep
-                if (data.currentStep >= 0) {
-                    // Ordered step is completed
-                    stepOrdered.className = 'tracker-step completed active';
-                    progressWidth = 0;
-                }
-                
-                if (data.currentStep >= 1) {
-                    // Processing step is active or completed
-                    stepProcessing.className = 'tracker-step completed active';
-                    progressWidth = 50;
-                }
-                
-                if (data.currentStep === 1) {
-                    // If we're at processing, make it the in-progress step
-                    stepProcessing.className = 'tracker-step active in-progress';
-                }
-                
-                if (data.currentStep >= 2) {
-                    // Completed step is active
-                    stepCompleted.className = 'tracker-step completed active';
-                    progressWidth = 100;
-                }
-                
-                if (data.currentStep === 2) {
-                    // If we're at the final step but not yet completed
-                    stepCompleted.className = 'tracker-step active in-progress';
-                }
-                
-                // Update the progress bar with animation
+
+            // Toggle between the tracking sections
+                       // Toggle between the tracking sections
+                       const myRequestsBtn = document.getElementById('my-requests-btn');
+            const helpingOrdersBtn = document.getElementById('helping-orders-btn');
+            const myRequestsSection = document.getElementById('my-requests-section');
+            const helpingOrdersSection = document.getElementById('helping-orders-section');
+
+            myRequestsBtn.addEventListener('click', function() {
+                myRequestsSection.classList.remove('hidden');
+                helpingOrdersSection.classList.add('hidden');
+                myRequestsBtn.classList.add('active');
+                helpingOrdersBtn.classList.remove('active');
+            });
+
+            helpingOrdersBtn.addEventListener('click', function() {
+                helpingOrdersSection.classList.remove('hidden');
+                myRequestsSection.classList.add('hidden');
+                helpingOrdersBtn.classList.add('active');
+                myRequestsBtn.classList.remove('active');
+            });
+
+            // Helping orders tracking functionality
+            const helpingOrderForm = document.getElementById('helping-order-form');
+            const helpingResultView = document.getElementById('helping-result-view');
+            const helpingBackBtn = document.getElementById('helping-back-btn');
+            const helpingTrackBtn = document.getElementById('helping-track-btn');
+            const helpingOrderNumberInput = document.getElementById('helping-order-number');
+
+            // Sample helping order data (in a real app, this would come from your API)
+            const mockHelpingOrderData = {
+                orderNumber: 'FY-2024-002',
+                customerName: 'john_doe',
+                status: 'In Progress',
+                created: '2025-03-25',
+                expectedCompletion: '2025-04-05'
+            };
+
+            // Event listeners for helping orders
+            helpingOrderForm.addEventListener('submit', trackHelpingOrder);
+            helpingBackBtn.addEventListener('click', resetHelpingTracking);
+
+            function trackHelpingOrder(e) {
+                e.preventDefault();
+
+                // Show loading state
+                const originalHelpingBtnText = helpingTrackBtn.innerHTML;
+                helpingTrackBtn.disabled = true;
+                helpingTrackBtn.innerHTML = '<span class="spinner"></span>Tracking...';
+
+                // Simulate API call
                 setTimeout(() => {
-                    amazonProgress.style.width = `${progressWidth}%`;
-                }, 500);
+                    displayHelpingOrderData(mockHelpingOrderData);
+                    helpingOrderForm.classList.add('hidden');
+                    helpingResultView.classList.remove('hidden');
+
+                    // Reset button state
+                    helpingTrackBtn.disabled = false;
+                    helpingTrackBtn.innerHTML = originalHelpingBtnText;
+                }, 1500);
+            }
+
+            function resetHelpingTracking() {
+                helpingOrderForm.classList.remove('hidden');
+                helpingResultView.classList.add('hidden');
+                helpingOrderNumberInput.value = '';
+            }
+
+            function displayHelpingOrderData(data) {
+                // Set basic info
+                document.getElementById('helping-result-order-number').textContent = `Order #${data.orderNumber}`;
+                document.getElementById('helping-result-customer-name').textContent = `Customer: ${data.customerName}`;
+                document.getElementById('helping-order-status').textContent = data.status;
+                document.getElementById('helping-order-date').textContent = data.created;
+                document.getElementById('helping-est-completion').textContent = data.expectedCompletion;
+
+                // Format the expected completion date
+                const expectedCompletionDate = new Date(data.expectedCompletion);
+                document.getElementById('helping-deadline').textContent = `Due by ${expectedCompletionDate.toLocaleDateString('en-US', { 
+                    year: 'numeric',
+                    month: 'long', 
+                    day: 'numeric'
+                })}`;
             }
         });
     </script>
 </body>
 </html>
+            

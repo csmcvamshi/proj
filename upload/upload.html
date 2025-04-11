@@ -4,33 +4,437 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Assignment</title>
-    <link rel="stylesheet" href="../nav.css">
-    <link rel="stylesheet" href="upload.css">
-    <script src="script.js" defer></script>
-    <script src="../nav.js" defer></script>
     <style>
+        :root {
+            --primary-color: #8e44ad;
+            --secondary-color: #7f8c8d;
+            --accent-color: #16a085;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --danger-color: #e74c3c;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+            
+            /* Dark theme colors */
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --dark-surface-lighter: #2d2d2d;
+            --dark-text: #e0e0e0;
+            --dark-text-secondary: #aaaaaa;
+            --dark-border: #333333;
+            --dark-input-bg: #272727;
+            --dark-hover: #333333;
+        }
         
-    </style>
-    <script type="text/javascript">
-        function toPay(event) {
-            if (event) {
-                event.preventDefault(); // Prevent form submission
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--dark-surface);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        .logo {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 40px;
+        }
+        
+        .hamburger-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .hamburger-menu div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--dark-text);
+            margin: 5px 0;
+            transition: var(--transition);
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 73px;
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 73px);
+            background-color: var(--dark-surface);
+            transition: var(--transition);
+            z-index: 900;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            padding-top: 20px;
+            border-right: 1px solid var(--dark-border);
+        }
+        
+        .sidebar.open {
+            left: 0;
+        }
+        
+        .sidebar a {
+            display: block;
+            padding: 15px 25px;
+            text-decoration: none;
+            color: var(--dark-text);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        
+        .sidebar a:hover {
+            background-color: var(--dark-hover);
+            color: var(--primary-color);
+            padding-left: 30px;
+        }
+        
+        /* Main Content Styles */
+        main {
+            margin-top: 90px;
+            padding: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .upload-section {
+            background-color: var(--dark-surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--dark-border);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-text);
+        }
+        
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--dark-border);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--dark-input-bg);
+            color: var(--dark-text);
+        }
+        
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.2);
+        }
+        
+        .input-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .file-upload-container {
+            border: 2px dashed var(--dark-border);
+            border-radius: var(--border-radius);
+            padding: 40px 20px;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+            background-color: var(--dark-surface-lighter);
+        }
+        
+        .file-upload-container:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(142, 68, 173, 0.1);
+        }
+        
+        .file-upload-container i {
+            font-size: 48px;
+            color: var(--dark-text-secondary);
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .file-upload-container p {
+            margin: 10px 0;
+            color: var(--dark-text-secondary);
+        }
+        
+        .file-upload-container input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-formats {
+            font-size: 14px;
+            color: var(--dark-text-secondary);
+            margin-top: 5px;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #7d3c98;
+            transform: translateY(-2px);
+        }
+        
+        /* Price display section */
+        .price-info {
+            background-color: rgba(142, 68, 173, 0.1);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            border: 1px solid rgba(142, 68, 173, 0.3);
+            display: none;
+        }
+        
+        .price-info.visible {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .price-info h3 {
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .file-type {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .price-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        /* Recent Files Section */
+        .recent-files-section {
+            background-color: var(--dark-surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .view-all {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .view-all:hover {
+            text-decoration: underline;
+        }
+        
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .file-card {
+            background-color: var(--dark-surface-lighter);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            transition: var(--transition);
+            border: 1px solid var(--dark-border);
+        }
+        
+        .file-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--dark-input-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .file-details {
+            margin-top: 15px;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--dark-text-secondary);
+        }
+        
+        .file-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .file-action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px;
+            transition: var(--transition);
+            width: auto;
+            margin: 0;
+        }
+        
+        .file-action-btn:hover {
+            color: var(--accent-color);
+            background: none;
+            transform: none;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: rgba(247, 220, 111, 0.2);
+            color: #f7dc6f;
+        }
+        
+        .status-submitted {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: var(--dark-surface);
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            color: var(--dark-text);
+            border-top: 1px solid var(--dark-border);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .file-list {
+                grid-template-columns: 1fr;
             }
-
-            var doc = document.getElementById("file-upload").files.length > 0; // Check if a file is selected
-            var date = document.getElementById("submission-date").value; // Get the selected date
-            let presentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
-
-            if (doc && date > presentDate) {
-                window.location.href = 'Pay/payment.html';
-            } else if (!doc) {
-                alert("Please select a file.");
-            } else {
-                alert("Select a valid date.");
+            
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .upload-section, .recent-files-section {
+                padding: 20px;
             }
         }
-    </script>
+
+        /* Dark theme for date input */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8);
+        }
+    </style>
 </head>
+
 <body>
     <header class="navbar">
         <div class="hamburger-container" onclick="toggleSidebar()">
@@ -41,44 +445,258 @@
             </div>
         </div>
         
-        <div class="logo" onclick="redirectToHome()" style="background-color: rgb(117, 117, 113);">
+        <div class="logo" onclick="redirectToHome()">
             <img src="../logo.png" alt="Logo">
         </div>
     </header>
     
-    <div class="sidebar">
-        <a href="../upload/upload.html">Upload</a>
-        <a href="tasks.html">Tasks</a>
-        <a href="../poll/poll.html">Poll</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
+    <div class="sidebar" id="sidebar">
+        <a href="../home/home.html"> <i class="upload-icon"></i>Home</a>
+        <a href="../upload/upload.html"><i class="upload-icon"></i> Upload</a>
+        <a href="../services/services.html"><i class="tasks-icon"></i> Service</a>
+        <a href="../poll/poll.html"><i class="poll-icon"></i> Poll</a>
+        <a href="../aboutus.html"><i class="about-icon"></i> About us</a>
+        <a href="../contactus.html"><i class="contact-icon"></i> Support</a>
     </div>
-    <br>
-    <br>
-    <br>
-    <br>
-
-    <main class="upload-section">
-        <br>
-        <h1>Upload Your Assignment</h1>
-        <br>
-        <form id="upload-form" novalidate>
-            <div class="input-group">
-                <label for="file-upload"></label>
-                <input type="file" id="file-upload" name="file-upload" accept=".pdf, .docx, .txt" required>
+    
+    <main>
+        <section class="upload-section">
+            <h1>Upload Your Assignment</h1>
+            
+            <form id="upload-form" class="upload-form" novalidate>
+                <div class="input-group">
+                    <label for="file-upload">Upload File</label>
+                    <div class="file-upload-container">
+                        <i class="upload-icon">📄</i>
+                        <p>Drag and drop your file here</p>
+                        <p>or</p>
+                        <p><strong>Click to browse</strong></p>
+                        <p class="file-formats">Supported formats: HTML (₹50), PDF (₹100), DOCX (₹75), TXT (₹30)</p>
+                        <input type="file" id="file-upload" name="file-upload" accept=".pdf, .docx, .txt, .html" required>
+                    </div>
+                </div>
+                
+                <div class="price-info" id="price-info">
+                    <h3>File Type: <span id="file-type-display">None</span></h3>
+                    <p>Processing fee: <span class="price-amount" id="price-amount">₹0</span></p>
+                </div>
+                
+                <div class="input-group">
+                    <label for="submission-date">Submission Date</label>
+                    <input type="date" id="submission-date" name="submission-date" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="assignment-title">Assignment Title</label>
+                    <input type="text" id="assignment-title" name="assignment-title" placeholder="Enter assignment title" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="assignment-description">Description</label>
+                    <textarea id="assignment-description" name="assignment-description" placeholder="Enter assignment description or additional instructions"></textarea>
+                </div>
+                
+                <button type="button" id="proceed-payment" onclick="toPay(event)">Proceed to Payment</button>
+            </form>
+        </section>
+        
+        <section class="recent-files-section">
+            <div class="section-header">
+                <h2 class="section-title">Recently Uploaded Files</h2>
+                <a href="#" class="view-all">View All</a>
             </div>
-
-            <div class="input-group">
-                <label for="submission-date">Enter Submission Date (MM/DD/YYYY):</label>
-                <input type="date" id="submission-date" name="submission-date" placeholder="MM/DD/YYYY" required>
+            
+            <div class="file-list">
+                <!-- Example file cards will be added dynamically -->
             </div>
-
-            <button type="button" id="proceed-payment" onclick="toPay(event)">Proceed to Payment</button>
-        </form>
+        </section>
     </main>
-
+    
     <footer>
         <p>&copy; 2025 Learning Platform. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Define the pricing structure
+        const filePricing = {
+            'html': 50,
+            'htm': 50,
+            'pdf': 100,
+            'docx': 75,
+            'doc': 75,
+            'txt': 30,
+            'rtf': 40,
+            'ppt': 80,
+            'pptx': 80,
+            'xls': 60,
+            'xlsx': 60
+        };
+        
+        let selectedFilePrice = 0;
+        let selectedFileName = '';
+        let selectedFileType = '';
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+        
+        function redirectToHome() {
+            window.location.href = '../index.html';
+        }
+        
+        // Handle file selection
+        document.getElementById('file-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileSelection(file);
+            }
+        });
+        
+        function handleFileSelection(file) {
+            selectedFileName = file.name;
+            const extension = file.name.split('.').pop().toLowerCase();
+            selectedFileType = extension;
+            
+            // Get the price based on file type
+            if (filePricing.hasOwnProperty(extension)) {
+                selectedFilePrice = filePricing[extension];
+            } else {
+                // Default price for unsupported formats
+                selectedFilePrice = 25;
+            }
+            
+            // Update the price display
+            document.getElementById('file-type-display').textContent = extension.toUpperCase();
+            document.getElementById('price-amount').textContent = `₹${selectedFilePrice}`;
+            
+            // Show the price info section
+            const priceInfo = document.getElementById('price-info');
+            priceInfo.classList.add('visible');
+        }
+        
+        function toPay(event) {
+            if (event) {
+                event.preventDefault(); // Prevent form submission
+            }
+            
+            var fileInput = document.getElementById("file-upload");
+            var dateInput = document.getElementById("submission-date");
+            var titleInput = document.getElementById("assignment-title");
+            var descriptionInput = document.getElementById("assignment-description");
+            
+            var hasFile = fileInput.files.length > 0;
+            var date = dateInput.value;
+            var hasTitle = titleInput.value.trim() !== '';
+            
+            let presentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+            
+            if (!hasFile) {
+                alert("Please select a file to upload.");
+                return;
+            }
+            
+            if (!date) {
+                alert("Please select a submission date.");
+                return;
+            }
+            
+            if (date <= presentDate) {
+                alert("Please select a future submission date.");
+                return;
+            }
+            
+            if (!hasTitle) {
+                alert("Please enter an assignment title.");
+                return;
+            }
+            
+            // All validations passed, store data for payment page
+            localStorage.setItem('uploadedFileName', selectedFileName);
+            localStorage.setItem('fileType', selectedFileType);
+            localStorage.setItem('filePrice', selectedFilePrice);
+            localStorage.setItem('assignmentTitle', titleInput.value);
+            localStorage.setItem('assignmentDescription', descriptionInput.value);
+            
+            // Redirect to payment page
+            window.location.href = 'Pay/payment.html';
+        }
+        
+        // Add drag and drop functionality
+        const dropArea = document.querySelector('.file-upload-container');
+        const fileInput = document.getElementById('file-upload');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropArea.style.borderColor = '#8e44ad';
+            dropArea.style.backgroundColor = 'rgba(142, 68, 173, 0.1)';
+        }
+        
+        function unhighlight() {
+            dropArea.style.borderColor = 'var(--dark-border)';
+            dropArea.style.backgroundColor = 'var(--dark-surface-lighter)';
+        }
+        
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            
+            // Process the dropped file
+            if (files.length > 0) {
+                handleFileSelection(files[0]);
+            }
+        }
+
+        // Add some example file cards for demonstration
+        window.addEventListener('DOMContentLoaded', () => {
+            const fileList = document.querySelector('.file-list');
+            
+            // Example file data
+            const exampleFiles = [
+                { name: 'Research_Paper.pdf', type: 'PDF', date: 'Mar 27, 2025', status: 'pending' },
+                { name: 'Assignment_02.docx', type: 'DOCX', date: 'Mar 25, 2025', status: 'submitted' },
+                { name: 'Notes.txt', type: 'TXT', date: 'Mar 20, 2025', status: 'submitted' }
+            ];
+            
+            exampleFiles.forEach(file => {
+                const card = document.createElement('div');
+                card.className = 'file-card';
+                card.innerHTML = `
+                    <div class="file-icon">${file.type.charAt(0)}</div>
+                    <div class="file-details">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-meta">
+                            <span>${file.date}</span>
+                            <span class="status-badge status-${file.status}">${file.status}</span>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">View</button>
+                        <button class="file-action-btn">Download</button>
+                    </div>
+                `;
+                fileList.appendChild(card);
+            });
+        });
+    </script>
 </body>
 </html>
