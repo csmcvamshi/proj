@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #36393f;
+            --secondary-bg: #2f3136;
+            --hover-bg: #42464d;
+            --discord-purple: #7289da;
+            --discord-purple-hover: #5b6eae;
+            --text-color: #ffffff;
+            --text-secondary: #b9bbbe;
+            --sidebar-bg: #202225;
+            --navbar-bg: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: var(--navbar-bg);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .brand {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand i {
+            margin-right: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--sidebar-bg);
+            padding-top: 60px;
+            transition: all 0.3s ease;
+            z-index: 900;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar a {
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            margin: 0.2rem 0.8rem;
+        }
+
+        .sidebar a i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-color);
+        }
+
+        .sidebar a.active {
+            background-color: var(--discord-purple);
+            color: var(--text-color);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 60px 0 0 0;
+            transition: margin-left 0.3s ease;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .intro-area {
+            padding: 1.5rem 2rem;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        #discord-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .discord-header {
+            padding: 1rem 1.5rem;
+            background-color: var(--primary-bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .discord-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .discord-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--discord-purple);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .discord-stats {
+            display: flex;
+            align-items: center;
+        }
+
+        .stat {
+            margin-left: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat i {
+            margin-right: 0.5rem;
+            color: var(--discord-purple);
+        }
+
+        .discord-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .discord-embed {
+            flex: 1;
+            border: none;
+            background-color: var(--primary-bg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .discord-buttons {
+            display: flex;
+            padding: 1rem 1.5rem;
+            background-color: var(--secondary-bg);
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--discord-purple);
+            color: var(--text-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--discord-purple-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--hover-bg);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #4e535c;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon i {
+            margin-right: 0;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .toggle-label {
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .fullscreen-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .fullscreen-btn:hover {
+            color: var(--text-color);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #view-controls {
+            padding: 0.5rem 1rem;
+            background-color: var(--secondary-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                box-shadow: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#" class="brand">
+            <i class="fab fa-discord"></i>
+            Community
+        </a>
+        <button class="hamburger" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="home.html" class="active">
+            <i class="fas fa-home"></i>
+            Home
+        </a>
+        <a href="../upload/upload.html">
+            <i class="fas fa-upload"></i>
+            Upload
+        </a>
+        <a href="../services/services.html">
+            <i class="fas fa-cogs"></i>
+            Services
+        </a>
+        <a href="../poll/poll.html">
+            <i class="fas fa-poll"></i>
+            Poll
+        </a>
+        <a href="../aboutus.html">
+            <i class="fas fa-info-circle"></i>
+            About us
+        </a>
+        <a href="../contactus.html">
+            <i class="fas fa-headset"></i>
+            Support
+        </a>
+    </div>
+
+    <div class="main-content">
+        <div class="intro-area" id="intro-area">
+            <h1>Join Our Community</h1>
+            <p>Connect with other members of our community through our Discord server!</p>
+        </div>
+        
+        <div id="view-controls">
+            <div class="discord-info">
+                <div class="discord-icon">
+                    <i class="fab fa-discord"></i>
+                </div>
+                <div>
+                    <h3 id="server-name" style="margin-bottom: 0;">Community Discord</h3>
+                    <small id="online-count">Loading members...</small>
+                </div>
+            </div>
+            
+            <div class="toggle-container">
+                <button class="btn-icon btn-secondary" id="toggle-fullscreen">
+                    <i class="fas fa-expand-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="discord-container">
+            <div class="discord-body">
+                <iframe 
+                    id="discord-frame" 
+                    class="discord-embed" 
+                    src="https://discord.com/widget?id=YOUR_DISCORD_SERVER_ID&theme=dark" 
+                    allowtransparency="true" 
+                    frameborder="0" 
+                    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-forms"
+                ></iframe>
+            </div>
+
+            <div class="discord-buttons" id="discord-buttons">
+                <button class="btn btn-primary" id="open-login-modal">
+                    <i class="fas fa-sign-in-alt"></i> Login to Discord
+                </button>
+                <button class="btn btn-secondary" id="join-discord">
+                    <i class="fas fa-user-plus"></i> Join Server
+                </button>
+                <button class="btn btn-secondary" id="refresh-discord">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Discord server configuration
+        const DISCORD_SERVER_ID = 'YOUR_DISCORD_SERVER_ID';
+        const DISCORD_INVITE_CODE = 'YOUR_INVITE_CODE';
+        
+        // Flag to track if user is logged in
+        let isLoggedIn = false;
+        
+        // Toggle sidebar function for mobile view
+        function toggleSidebar() {
+            const sidebar = document.getElementById("mySidebar");
+            const mainContent = document.querySelector(".main-content");
+            
+            if (sidebar.style.width === "250px" || sidebar.style.width === "") {
+                sidebar.style.width = "0";
+                mainContent.style.marginLeft = "0";
+            } else {
+                sidebar.style.width = "250px";
+                if (window.innerWidth > 768) {
+                    mainContent.style.marginLeft = "250px";
+                }
+            }
+        }
+
+        // Handle responsive behavior
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById("mySidebar");
+            const mainContent = document.querySelector(".main-content");
+            const isFullscreen = document.body.classList.contains('fullscreen-mode');
+            
+            if (isFullscreen) return;
+            
+            if (window.innerWidth > 768) {
+                if (sidebar.style.width === "0px") {
+                    sidebar.style.width = "250px";
+                }
+                mainContent.style.marginLeft = "250px";
+            } else {
+                if (sidebar.style.width !== "250px") {
+                    sidebar.style.width = "0";
+                }
+                mainContent.style.marginLeft = "0";
+            }
+        });
+
+        // Function to load Discord data
+        function loadDiscordData() {
+            fetch(`https://discord.com/api/guilds/${DISCORD_SERVER_ID}/widget.json`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update Discord server info
+                    document.getElementById('server-name').textContent = data.name;
+                    document.getElementById('online-count').textContent = `${data.presence_count} members online`;
+                })
+                .catch(error => {
+                    console.error('Error fetching Discord data:', error);
+                    document.getElementById('server-name').textContent = 'Community Discord';
+                    document.getElementById('online-count').textContent = 'Unable to load member count';
+                });
+        }
+        
+        // Function to reload Discord iframe
+        function reloadDiscordFrame() {
+            const frame = document.getElementById('discord-frame');
+            frame.src = frame.src;
+        }
+        
+        // Function to toggle fullscreen mode
+        function toggleFullscreen() {
+            const body = document.body;
+            const introArea = document.getElementById('intro-area');
+            const fullscreenBtn = document.getElementById('toggle-fullscreen');
+            const fullscreenIcon = fullscreenBtn.querySelector('i');
+            
+            body.classList.toggle('fullscreen-mode');
+            
+            if (body.classList.contains('fullscreen-mode')) {
+                introArea.classList.add('hidden');
+                fullscreenIcon.classList.remove('fa-expand-alt');
+                fullscreenIcon.classList.add('fa-compress-alt');
+                document.documentElement.style.overflow = 'hidden';
+            } else {
+                introArea.classList.remove('hidden');
+                fullscreenIcon.classList.remove('fa-compress-alt');
+                fullscreenIcon.classList.add('fa-expand-alt');
+                document.documentElement.style.overflow = '';
+            }
+        }
+        
+        // Function to open Discord in direct login mode
+        function openDiscordLogin() {
+            // Update the iframe to point to Discord login
+            const frame = document.getElementById('discord-frame');
+            
+            // This approach uses the widget but tries to make it fullscreen
+            // and focuses on the login functionality
+            frame.src = `https://discord.com/login?redirect_to=%2Fchannels%2F${DISCORD_SERVER_ID}`;
+            
+            // After login, we'd want to change some buttons and reload with
+            // proper authentication, but that would require deeper integration
+            
+            // In a real implementation, you'd want to use Discord's OAuth2 flow
+            // which requires backend code and can't be fully implemented in frontend
+        }
+        
+        // Function to join Discord server
+        function joinDiscordServer() {
+            window.open(`https://discord.gg/${DISCORD_INVITE_CODE}`, '_blank');
+        }
+        
+        // Initialize when document is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load Discord data
+            loadDiscordData();
+            
+            // Set up refresh button
+            document.getElementById('refresh-discord').addEventListener('click', reloadDiscordFrame);
+            
+            // Set up fullscreen toggle
+            document.getElementById('toggle-fullscreen').addEventListener('click', toggleFullscreen);
+            
+            // Set up login button
+            document.getElementById('open-login-modal').addEventListener('click', openDiscordLogin);
+            
+            // Set up join server button
+            document.getElementById('join-discord').addEventListener('click', joinDiscordServer);
+            
+            // Refresh Discord data periodically
+            setInterval(loadDiscordData, 60000); // Update every minute
+        });
+    </script>
+</body>
+</html>

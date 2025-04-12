@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Portal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+            min-height: 100vh;
+            color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(120px);
+            z-index: -1;
+        }
+
+        .payment-container {
+            background-color: rgba(30, 30, 30, 0.85);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            opacity: 0;
+            color: #ffffff;
+        }
+
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffffff;
+            opacity: 0;
+        }
+
+        .file-details {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            opacity: 0;
+        }
+
+        .file-details h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .detail-row strong {
+            color: #ffffff;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: #f0f0f0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            opacity: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #2a2a2a;
+            color: #f0f0f0;
+            border: 2px solid #444;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #ffffff;
+            outline: none;
+        }
+
+        .pay-button {
+            background-color: #444;
+            color: #ffffff;
+            border: none;
+            padding: 15px 0;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            margin-top: 30px;
+            opacity: 0;
+        }
+
+        .pay-button:hover {
+            background-color: #666;
+            transform: translateY(-3px);
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: #cccccc;
+            font-size: 14px;
+            opacity: 0;
+        }
+
+        .secure-badge svg {
+            margin-right: 8px;
+            height: 16px;
+        }
+
+        .price-display {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+            opacity: 0;
+        }
+
+        .price-display h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .price-display p {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .back-button {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            opacity: 0;
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animation classes */
+        .fade-slide-up {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .success-message h2 {
+            margin-bottom: 15px;
+            color: #32a852;
+        }
+
+        .success-message p {
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .success-message button {
+            background-color: #32a852;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .payment-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="logo fade-slide-up">LEARNING PLATFORM</div>
+        <h1 class="fade-slide-up">Complete Your Payment</h1>
+        
+        <div class="file-details fade-slide-up">
+            <h3>Assignment Details</h3>
+            <div class="detail-row">
+                <strong>File Name:</strong>
+                <span class="detail-value" id="file-name">Loading...</span>
+            </div>
+            <div class="detail-row">
+                <strong>File Type:</strong>
+                <span class="detail-value" id="file-type">Loading...</span>
+            </div>
+            <div class="detail-row">
+                <strong>Assignment:</strong>
+                <span class="detail-value" id="assignment-title">Loading...</span>
+            </div>
+        </div>
+        
+        <div class="price-display fade-slide-up">
+            <h3>Processing Fee</h3>
+            <p id="selected-price">₹0</p>
+        </div>
+        
+        <div class="form-group fade-slide-up">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your full name">
+        </div>
+        
+        <div class="form-group fade-slide-up">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="your@email.com">
+        </div>
+        
+        <div class="form-group fade-slide-up">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Enter your phone number">
+        </div>
+        
+        <button id="pay-button" class="pay-button fade-slide-up">Pay Now</button>
+        
+        <a href="../upload.html" class="back-button fade-slide-up">Back to Upload</a>
+        
+        <div class="secure-badge fade-slide-up">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Secure Payment via RazorPay
+        </div>
+    </div>
+    
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <div class="success-message" id="success-message">
+        <h2>Payment Successful!</h2>
+        <p>Your assignment has been submitted successfully. You will receive a confirmation email shortly.</p>
+        <button id="continue-button">Continue to Dashboard</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get file data from localStorage
+            const fileName = localStorage.getItem('uploadedFileName') || 'No file selected';
+            const fileType = localStorage.getItem('fileType') || 'unknown';
+            const filePrice = localStorage.getItem('filePrice') || '0';
+            const assignmentTitle = localStorage.getItem('assignmentTitle') || 'Untitled';
+            
+            // Update the UI with file information
+            document.getElementById('file-name').textContent = fileName;
+            document.getElementById('file-type').textContent = fileType.toUpperCase();
+            document.getElementById('assignment-title').textContent = assignmentTitle;
+            document.getElementById('selected-price').textContent = `₹${filePrice}`;
+            
+            // Animation on page load
+            gsap.to('.payment-container', {
+                opacity: 1, 
+                y: 0, 
+                duration: 0.8, 
+                ease: 'power2.out'
+            });
+
+            const elements = document.querySelectorAll('.fade-slide-up');
+            gsap.to(elements, {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                stagger: 0.1,
+                ease: 'power2.out',
+                delay: 0.3
+            });
+
+            // Form input animations
+            const formInputs = document.querySelectorAll('input');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    gsap.to(this, {
+                        borderColor: '#ffffff',
+                        duration: 0.3
+                    });
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        gsap.to(this, {
+                            borderColor: '#444',
+                            duration: 0.3
+                        });
+                    }
+                });
+            });
+
+            // Loading overlay
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const successMessage = document.getElementById('success-message');
+            
+            function showLoading() {
+                loadingOverlay.style.visibility = 'visible';
+                gsap.to(loadingOverlay, {
+                    opacity: 1,
+                    duration: 0.3
+                });
+            }
+            
+            function hideLoading() {
+                gsap.to(loadingOverlay, {
+                    opacity: 0,
+                    duration: 0.3,
+                    onComplete: () => {
+                        loadingOverlay.style.visibility = 'hidden';
+                    }
+                });
+            }
+            
+            function showSuccess() {
+                successMessage.style.visibility = 'visible';
+                gsap.to(successMessage, {
+                    opacity: 1,
+                    duration: 0.3
+                });
+            }
+
+            // RazorPay integration
+            const payButton = document.getElementById('pay-button');
+            
+            payButton.addEventListener('click', function() {
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                
+                if (!name || !email || !phone) {
+                    alert('Please fill all fields');
+                    return;
+                }
+                
+                // Validate email format
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    alert('Please enter a valid email address');
+                    return;
+                }
+                
+                // Validate phone number (assuming Indian format)
+                const phoneRegex = /^[6-9]\d{9}$/;
+                if (!phoneRegex.test(phone)) {
+                    alert('Please enter a valid 10-digit phone number');
+                    return;
+                }
+                
+                // Animate button on click
+                gsap.to(payButton, {
+                    scale: 0.95,
+                    duration: 0.1,
+                    onComplete: () => {
+                        gsap.to(payButton, {
+                            scale: 1,
+                            duration: 0.1
+                        });
+                        
+                        // Show loading overlay
+                        showLoading();
+                        
+                        // Simulate payment processing (would be replaced with actual RazorPay integration)
+                        setTimeout(() => {
+                            // RazorPay options configuration
+                            const options = {
+                                key: "rzp_test_XXXXXXXXXXXXXXX", // Replace with actual RazorPay key
+                                amount: parseFloat(filePrice) * 100, // Amount in paisa
+                                currency: "INR",
+                                name: "Learning Platform",
+                                description: `Payment for ${assignmentTitle}`,
+                                image: "../assets/logo.png", // Replace with your logo path
+                                handler: function(response) {
+                                    // Handle successful payment
+                                    hideLoading();
+                                    showSuccess();
+                                    
+                                    // Store payment info in localStorage
+                                    localStorage.setItem('paymentId', response.razorpay_payment_id);
+                                    localStorage.setItem('paymentStatus', 'completed');
+                                    
+                                    // In a real implementation, you would make an API call to your backend
+                                    // to verify the payment and update your database
+                                },
+                                prefill: {
+                                    name: name,
+                                    email: email,
+                                    contact: phone
+                                },
+                                theme: {
+                                    color: "#000000"
+                                },
+                                modal: {
+                                    ondismiss: function() {
+                                        hideLoading();
+                                    }
+                                }
+                            };
+                            
+                            // For demo purposes, simulate success without RazorPay
+                            // In production, you would use: const razorpayInstance = new Razorpay(options);
+                            // And then call: razorpayInstance.open();
+                            
+                            hideLoading();
+                            showSuccess();
+                        }, 2000);
+                    }
+                });
+            });
+            
+            // Continue button in success message
+            document.getElementById('continue-button').addEventListener('click', function() {
+                window.location.href = "../dashboard.html";
+            });
+        });
+    </script>
+</body>
+</html>

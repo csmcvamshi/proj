@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link rel="stylesheet" href="auth.css" />
+
+  <!-- Google OAuth -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Cloudflare Turnstile (optional) -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <!-- jwt-decode CDN for decoding Google JWT -->
+  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+</head>
+<body>
+  <!-- Optional Back Button -->
+  <button class="back-button" onclick="history.back()">Back</button>
+
+  <div class="auth-container">
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div class="placeholder-logo"></div>
+    </div>
+
+    <!-- Heading -->
+    <h1>Yooo, welcome back!</h1>
+    <p class="subtext">
+      First time here?
+      <a href="signup.html">Sign up for free</a>
+    </p>
+
+    <!-- GOOGLE SIGN-IN -->
+    <div
+      id="g_id_onload"
+      data-client_id="YOUR_GOOGLE_CLIENT_ID"
+      data-auto_prompt="false"
+      data-callback="handleGoogleLogin"
+    ></div>
+    <div class="g_id_signin" data-type="standard"></div>
+
+    <!-- OR Divider -->
+    <p class="or-divider">or</p>
+
+    <!-- EMAIL LOGIN FORM -->
+    <form class="auth-form" id="login-form">
+      <input type="email" id="login-email" placeholder="Your email" required />
+      <input type="password" id="login-password" placeholder="••••••••" required />
+      <button type="submit" class="primary-btn">Sign in</button>
+    </form>
+
+    <!-- SSO Button -->
+    <p class="or-divider">or</p>
+    <button class="secondary-btn">
+      Single sign-on (SSO)
+    </button>
+
+    <!-- Legal -->
+    <p class="legal-text">
+      You acknowledge that you read, and agree, to our
+      <a href="#" target="_blank">Terms of Service</a> and
+      <a href="#" target="_blank">Privacy Policy</a>.
+    </p>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Learning Platform. All rights reserved.</p>
+  </footer>
+
+  <!-- JS Logic -->
+  <script>
+    // 1) Google Sign-In callback with backend verification
+    async function handleGoogleLogin(response) {
+      try {
+        const token = response.credential;
+        const userInfo = jwt_decode(token);
+
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: userInfo.email,
+            name: userInfo.name,
+            picture: userInfo.picture
+          })
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          alert(data.message || "Login failed.");
+          return;
+        }
+
+        const data = await res.json();
+
+        localStorage.setItem("user", JSON.stringify({
+          name: data.name || userInfo.name,
+          email: data.email || userInfo.email,
+          picture: data.picture || userInfo.picture
+        }));
+
+        window.location.href = "homelogin.html";
+
+      } catch (err) {
+        console.error("Error decoding or verifying Google token:", err);
+        alert("Google login failed. Please try again.");
+      }
+    }
+
+    // 2) Email/Password login (Simulated)
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById('login-email').value;
+
+      // Fake login for demo
+      localStorage.setItem("user", JSON.stringify({
+        name: "Guest User",
+        email: email
+      }));
+
+      window.location.href = "homelogin.html";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Work</title>
+    <link rel="stylesheet" href="services.css"> <!-- Link to the common CSS file -->
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo" onclick="redirectToHome()">
+            <img src="../logo.png" alt="Logo">
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../home/home.html">Home</a></li>
+                <li><a href="../upload/upload.html">Upload</a></li>
+                <li><a href="../poll/poll.html">Poll</a></li>
+                <li><a href="../about/about.html">About</a></li>
+                <li><a href="../contact/contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </header>
+
+    <main>
+        <h1>Upload Your Work</h1>
+
+        <form id="upload-form" onsubmit="handleUpload(event)">
+            <div class="input-group">
+                <label for="file-upload">Select File:</label>
+                <input type="file" id="file-upload" name="file-upload" accept=".pdf, .docx, .txt" required>
+            </div>
+
+            <div class="input-group">
+                <label for="submission-date">Enter Submission Date:</label>
+                <input type="date" id="submission-date" name="submission-date" required>
+            </div>
+
+            <button type="submit">Upload Work</button>
+        </form>
+
+        <div id="message" style="margin-top: 20px;"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Learning Platform. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function handleUpload(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const fileInput = document.getElementById('file-upload');
+            const dateInput = document.getElementById('submission-date');
+            const messageDiv = document.getElementById('message');
+
+            // Simulate file upload process
+            if (fileInput.files.length > 0 && dateInput.value) {
+                // Here you would typically handle the file upload to the server
+                // For demonstration, we will just show a success message
+                messageDiv.innerHTML = "File uploaded successfully! Submission Date: " + dateInput.value;
+                messageDiv.style.color = "green";
+
+                // Optionally, redirect back to services page after a delay
+                setTimeout(() => {
+                    window.location.href = 'services.html'; // Redirect to services page
+                }, 2000);
+            } else {
+                messageDiv.innerHTML = "Please select a file and enter a submission date.";
+                messageDiv.style.color = "red";
+            }
+        }
+
+        function redirectToHome() {
+            window.location.href = '../home/home.html';
+        }
+
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+
+</body>
+</html>

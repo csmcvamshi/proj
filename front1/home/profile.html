@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dark UI Example</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: sans-serif;
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #1a1a1a;
+      padding: 20px;
+    }
+    .sidebar a {
+      display: block;
+      color: #ffffff;
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .sidebar a:hover {
+      color: #cccccc;
+    }
+    .back-to-spaces {
+      margin-bottom: 30px;
+      display: inline-block;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+      position: relative;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #2d2d2d;
+      color: #ffffff;
+      border: 1px solid #444;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .back-button:hover {
+      background-color: #3a3a3a;
+    }
+
+    .content h2 {
+      margin-top: 60px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .avatar {
+      width: 90px;
+      height: 90px;
+      background-color: #333333;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+    .profile-form {
+      max-width: 500px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    input[type="text"] {
+      width: 100%;
+      background-color: #2d2d2d;
+      border: 1px solid #444;
+      padding: 8px;
+      color: #ffffff;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .btn-primary {
+      background-color: #1f7cbe;
+      border: none;
+      color: #ffffff;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background-color: #16659a;
+    }
+
+    .connected-accounts {
+      margin-top: 30px;
+    }
+    .connected-accounts h4 {
+      margin-bottom: 10px;
+    }
+    .btn-connect {
+      display: inline-block;
+      background-color: #2d2d2d;
+      color: #ffffff;
+      padding: 8px 16px;
+      border: 1px solid #444;
+      border-radius: 4px;
+      margin-right: 10px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .btn-connect:hover {
+      background-color: #3a3a3a;
+    }
+
+    .logout {
+      margin-top: 30px;
+    }
+    .btn-logout {
+      background-color: #c0392b;
+      color: #ffffff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-logout:hover {
+      background-color: #a93226;
+    }
+
+    .account-section .settings-box {
+      border: 1px solid #444;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .delete-box {
+      border-color: #b30000;
+    }
+    .btn-request, .btn-delete {
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      cursor: pointer;
+      color: #ffffff;
+    }
+    .btn-request {
+      background-color: #333;
+    }
+    .btn-request:hover {
+      background-color: #444;
+    }
+    .btn-delete {
+      background-color: #c0392b;
+    }
+    .btn-delete:hover {
+      background-color: #a93226;
+    }
+    .settings-box p {
+      margin: 10px 0;
+      color: #cccccc;
+    }
+
+    #profile, #account {
+      display: none; 
+    }
+    #profile.active {
+      display: block;
+    }
+    #account.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a href="#" class="back-to-spaces">&larr; Back to Spaces</a>
+      <nav>
+        <a onclick="showSection('profile')">Profile</a>
+        <a onclick="showSection('account')">Account</a>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Back Button -->
+      <button class="back-button" onclick="window.location.href='homelogin.html'">⬅ Back</button>
+
+      <!-- PROFILE PAGE -->
+      <section id="profile" class="active">
+        <h2>Profile</h2>
+        <div class="avatar">d</div>
+        <form class="profile-form">
+          <div class="form-group">
+            <label for="fullName">Full name</label>
+            <input type="text" id="fullName" placeholder="discord 1111" />
+          </div>
+          <div class="form-group">
+            <label for="nickname">What should we call you?</label>
+            <input type="text" id="nickname" />
+          </div>
+          <div class="form-group">
+            <label for="workDescription">What best describes your work?</label>
+            <input type="text" id="workDescription" placeholder="Engineering" />
+          </div>
+          <div class="form-group">
+            <label for="school">Where do you attend school?</label>
+            <input type="text" id="school" />
+          </div>
+          <div class="form-group">
+            <label for="major">What’s your major? (If in college/university)</label>
+            <input type="text" id="major" />
+          </div>
+          <button type="submit" class="btn-primary">Update Profile</button>
+        </form>
+
+        <div class="connected-accounts">
+          <h4>Connected accounts</h4>
+          <a href="#" class="btn-connect">Notion &rarr; Connect</a>
+          <a href="#" class="btn-connect">Github &rarr; Connect</a>
+        </div>
+
+        <div class="logout">
+          <button class="btn-logout">Log Out</button>
+        </div>
+      </section>
+
+      <!-- ACCOUNT PAGE -->
+      <section id="account">
+        <h2>Account Settings</h2>
+        <div class="account-section">
+          <div class="settings-box request-box">
+            <h3>Request Data</h3>
+            <p>
+              Request all data associated with your account. This includes all files,
+              notes, settings, integration information, spaces, and every piece of data
+              we have on you.
+            </p>
+            <button class="btn-request">Request</button>
+          </div>
+
+          <div class="settings-box delete-box">
+            <h3>Delete Account</h3>
+            <p>Permanently delete your account and all associated data.</p>
+            <button class="btn-delete">Delete Account</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function showSection(sectionId) {
+      document.getElementById("profile").classList.remove("active");
+      document.getElementById("account").classList.remove("active");
+      document.getElementById(sectionId).classList.add("active");
+    }
+  </script>
+</body>
+</html>
